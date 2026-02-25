@@ -29,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     ),
     OnboardingPage(
       // Замени на свою картинку
-      imagePath: 'assets/images/splash_sc.png',
+      imagePath: 'assets/images/prototype.jpg',
       title: 'Начнём',
       description: 'Готовы начать? Присоединяйтесь к нам прямо сейчас!',
     ),
