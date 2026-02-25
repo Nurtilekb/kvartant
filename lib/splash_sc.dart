@@ -143,7 +143,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       width: _currentPage == index ? 24.w : 8.w,
                       decoration: BoxDecoration(
                         color: _currentPage == index
-                            ? Color(0xFF54B435)
+                            ? const Color(0xFF54B435)
                             : Colors.white,
                         borderRadius: BorderRadius.circular(4.r),
                       ),
@@ -184,7 +184,7 @@ class _SplashScreenState extends State<SplashScreen> {
                       ElevatedButton(
                         onPressed: _nextPage,
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFF54B435),
+                          backgroundColor: const Color(0xFF54B435),
                           foregroundColor: Colors.white,
                           padding: EdgeInsets.symmetric(
                             horizontal: 32.w,
@@ -220,7 +220,7 @@ class _SplashScreenState extends State<SplashScreen> {
     // содержимое страницы без отдельной картинки, фон уже в Scaffold
     return Container(
       decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
             colors: [
