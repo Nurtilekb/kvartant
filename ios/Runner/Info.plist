@@ -47,13 +47,13 @@
 	<true/>
 	<key>CFBundleURLTypes</key>
 	<array>
-		<dict>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>com.googleusercontent.apps.YOUR_GOOGLE_CLIENT_ID</string>
-			</array>
-		</dict>
-	</array>
+  <dict>
+    <key>CFBundleURLSchemes</key>
+    <array>
+      <string>com.googleusercontent.apps.TWO_CLIENT_ID</string>
+    </array>
+  </dict>
+</array>
 	<key>com.apple.developer.applesignin</key>
 	<array>
 		<string>Default</string>
