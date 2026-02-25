@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-/// Экран регистрации с кнопками Google и Apple
+/// Экран регистрации через Firebase
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
 
@@ -16,33 +17,76 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool _isLoading = false;
   bool _obscurePassword = true;
 
+  // Регистрация через Firebase
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     try {
-      // Здесь добавь логику регистрации
-      // Например, вызов API для создания аккаунта
+      // Создание пользователя в Firebase Auth
+      final UserCredential userCredential = await FirebaseAuth.instance
+          .createUserWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
 
-      // После успешной регистрации — переход на главный экран
+      // Обновление имени пользователя
+      if (userCredential.user != null) {
+        await userCredential.user!.updateDisplayName(_nameController.text.trim());
+        
+        // Отправка email для подтверждения (опционально)
+        // await userCredential.user!.sendEmailVerification();
+      }
+
       if (mounted) {
+        // Показываем сообщение об успешной регистрации
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Регистрация успешна! Добро пожаловать!'),
+            backgroundColor: Colors.green,
+          ),
+        );
+        
+        // Переход на главный экран
         Navigator.of(context).pushReplacementNamed('/home');
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        String errorMessage;
+        switch (e.code) {
+          case 'email-already-in-use':
+            errorMessage = 'Этот email уже зарегистрирован';
+            break;
+          case 'invalid-email':
+            errorMessage = 'Неверный формат email';
+            break;
+          case 'weak-password':
+            errorMessage = 'Слишком слабый пароль';
+            break;
+          default:
+            errorMessage = 'Ошибка: ${e.message}';
+        }
+        _showMessage(errorMessage);
       }
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Ошибка регистрации: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
+        _showMessage('Ошибка регистрации: $e');
       }
     } finally {
       if (mounted) {
         setState(() => _isLoading = false);
       }
     }
+  }
+
+  void _showMessage(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   @override
@@ -275,88 +319,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                         ),
                 ),
-
-                const SizedBox(height: 30),
-
-                // ---------- НОВЫЙ БЛОК: "Or continue with" ----------
-                Row(
-                  children: [
-                    Expanded(child: Divider(color: Colors.grey.shade300)),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Text(
-                        'Or continue with',
-                        style: TextStyle(
-                          color: Colors.grey.shade600,
-                          fontSize: 14,
-                        ),
-                      ),
-                    ),
-                    Expanded(child: Divider(color: Colors.grey.shade300)),
-                  ],
-                ),
-                const SizedBox(height: 30),
-
-                // Кнопка "Continue with Google" (с местом под иконку)
-                OutlinedButton(
-                  onPressed: () {
-                    // Добавьте логику входа через Google
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.grey.shade300),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    backgroundColor: Colors.white,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Замените этот SizedBox на Icon нужного размера
-                      const SizedBox(
-                          width: 24,
-                          height: 24), // Placeholder для иконки Google
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Continue with Google',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12),
-
-                // Кнопка "Continue with Apple" (с местом под иконку)
-                OutlinedButton(
-                  onPressed: () {
-                    // Добавьте логику входа через Apple
-                  },
-                  style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.grey.shade300),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    backgroundColor: Colors.white,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Замените этот SizedBox на Icon нужного размера
-                      const SizedBox(
-                          width: 24,
-                          height: 24), // Placeholder для иконки Apple
-                      const SizedBox(width: 8),
-                      const Text(
-                        'Continue with Apple',
-                        style: TextStyle(fontSize: 16, color: Colors.black),
-                      ),
-                    ],
-                  ),
-                ),
-                // ------------------------------------------------
-
                 const SizedBox(height: 20),
 
                 // Ссылка на вход
@@ -365,8 +327,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Text(
                       "Already have an account? ",
-                      style:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                      style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () {
