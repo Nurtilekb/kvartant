@@ -64,7 +64,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void _goToHome() {
     // Переход на главный экран приложения
     // Замени на свой экран
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).pushReplacementNamed('/signin');
   }
 
   void _skip() {
