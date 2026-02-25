@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-/// Экран входа с Google, Apple и регистрацией
+/// Экран входа с Google, Apple и регистрацией через Firebase
 class ExactSignInScreen extends StatefulWidget {
   const ExactSignInScreen({super.key});
 
@@ -12,8 +14,10 @@ class ExactSignInScreen extends StatefulWidget {
 
 class _ExactSignInScreenState extends State<ExactSignInScreen> {
   bool _isLoading = false;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
-  // Вход через Google
+  // Вход через Google с Firebase
   Future<void> _signInWithGoogle() async {
     if (_isLoading) return;
 
@@ -27,20 +31,27 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
       if (googleUser != null) {
-        // Успешный вход через Google
-        // Здесь можно получить данные пользователя:
-        // googleUser.email
-        // googleUser.displayName
-        // googleUser.photoUrl
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+
+        final credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        await FirebaseAuth.instance.signInWithCredential(credential);
 
         if (mounted) {
           _navigateToHome();
         }
       } else {
-        // Пользователь отменил вход
         if (mounted) {
           _showMessage('Вход через Google отменён');
         }
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        _showMessage('Ошибка Firebase: ${e.message}');
       }
     } catch (e) {
       if (mounted) {
@@ -53,7 +64,7 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
     }
   }
 
-  // Вход через Apple
+  // Вход через Apple с Firebase
   Future<void> _signInWithApple() async {
     if (_isLoading) return;
 
@@ -67,20 +78,65 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
         ],
       );
 
-      // Если получены данные — вход успешен
-      if (credential.authorizationCode.isNotEmpty) {
-        // Здесь можно получить данные пользователя:
-        // credential.email
-        // credential.givenName
-        // credential.familyName
+      final oauthCredential = OAuthProvider("apple.com").credential(
+        idToken: credential.identityToken,
+        accessToken: credential.authorizationCode,
+      );
 
-        if (mounted) {
-          _navigateToHome();
-        }
+      await FirebaseAuth.instance.signInWithCredential(oauthCredential);
+
+      if (mounted) {
+        _navigateToHome();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        _showMessage('Ошибка Firebase: ${e.message}');
       }
     } catch (e) {
       if (mounted) {
         _showMessage('Ошибка входа через Apple: $e');
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLoading = false);
+      }
+    }
+  }
+
+  // Вход по email/password через Firebase
+  Future<void> _signInWithEmail() async {
+    final email = _emailController.text.trim();
+    final password = _passwordController.text;
+
+    if (email.isEmpty || password.isEmpty) {
+      _showMessage('Введите email и пароль');
+      return;
+    }
+
+    setState(() => _isLoading = true);
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: email,
+        password: password,
+      );
+
+      if (mounted) {
+        _navigateToHome();
+      }
+    } on FirebaseAuthException catch (e) {
+      if (mounted) {
+        if (e.code == 'user-not-found') {
+          _showMessage('Пользователь не найден. Зарегистрируйтесь.');
+        } else if (e.code == 'wrong-password') {
+          _showMessage('Неверный пароль');
+        } else {
+          _showMessage('Ошибка: ${e.message}');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        _showMessage('Ошибка входа: $e');
       }
     } finally {
       if (mounted) {
@@ -110,22 +166,28 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
   }
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const Spacer(flex: 2),
-
               // Приветственный заголовок
-              const Text(
+              const SizedBox(height: 90),
+              Text(
                 'Hi, Welcome Back! 🥰',
                 style: TextStyle(
-                  fontSize: 28,
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.bold,
                   color: Colors.black,
                 ),
@@ -134,10 +196,10 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
               const SizedBox(height: 8),
 
               // Подзаголовок
-              const Text(
+              Text(
                 'Lorem ipsum dolor sit amet',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: 16.sp,
                   color: Colors.grey,
                 ),
                 textAlign: TextAlign.center,
@@ -157,6 +219,8 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
 
               // Поле ввода Email
               TextField(
+                controller: _emailController,
+                keyboardType: TextInputType.emailAddress,
                 decoration: InputDecoration(
                   hintText: 'Enter your email address',
                   hintStyle: const TextStyle(color: Colors.grey),
@@ -182,12 +246,49 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
               ),
               const SizedBox(height: 20),
 
+              // Метка Password
+              const Text(
+                'Password',
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 8),
+
+              // Поле ввода Password
+              TextField(
+                controller: _passwordController,
+                obscureText: true,
+                decoration: InputDecoration(
+                  hintText: 'Enter your password',
+                  hintStyle: const TextStyle(color: Colors.grey),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.grey),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: const BorderSide(color: Colors.blue),
+                  ),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+
               // Кнопка "Continue with Email"
               ElevatedButton(
-                onPressed: () {
-                  // Переход на экран регистрации по email
-                  _navigateToRegister();
-                },
+                onPressed: _isLoading ? null : _signInWithEmail,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
@@ -197,10 +298,21 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
                   ),
                   elevation: 0,
                 ),
-                child: const Text(
-                  'Continue with Email',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                ),
+                child: _isLoading
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor:
+                              AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                      )
+                    : const Text(
+                        'Continue with Email',
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
+                      ),
               ),
               const SizedBox(height: 30),
 
@@ -237,21 +349,22 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 15,
-                    ),
-                    SizedBox(
                       width: 40,
                       child: Center(
                         child: Image.asset(
-                            'assets/icons/google.png', // убедитесь, что путь правильный
-                            width: 30,
-                            height: 30),
+                          'assets/icons/google.png',
+                          width: 24,
+                          height: 24,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    const Text(
-                      'Continue with Google',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Text(
+                        'Continue with Google',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
                     ),
                   ],
                 ),
@@ -272,31 +385,31 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
                 child: Row(
                   children: [
                     SizedBox(
-                      width: 15,
-                    ),
-                    SizedBox(
                       width: 40,
                       child: Center(
                         child: Image.asset(
-                            'assets/icons/apple.png', // убедитесь, что путь правильный
-                            width: 30,
-                            height: 30),
+                          'assets/icons/apple.png',
+                          width: 24,
+                          height: 24,
+                        ),
                       ),
                     ),
-                    const SizedBox(width: 20),
-                    const Text(
-                      'Continue with Apple',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Text(
+                        'Continue with Apple',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
                     ),
                   ],
                 ),
               ),
 
-              const Spacer(),
+              const SizedBox(height: 40),
 
               // Строка "Don’t have an account? Sign Up"
               Row(
-                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
@@ -317,12 +430,6 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-
-              // Индикатор загрузки
-              if (_isLoading)
-                const Center(
-                  child: CircularProgressIndicator(),
-                ),
             ],
           ),
         ),
