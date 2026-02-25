@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,13 +17,13 @@ class _SplashScreenState extends State<SplashScreen> {
   final List<OnboardingPage> _pages = [
     OnboardingPage(
       // Замени на свою картинку
-      imagePath: 'assets/images/splash_sc.png',
+      imagePath: 'assets/images/kvartiras.jpg',
       title: 'Добро пожаловать',
       description: 'Откройте для себя удивительный мир возможностей',
     ),
     OnboardingPage(
       // Замени на свою картинку
-      imagePath: 'assets/images/splash_sc.png',
+      imagePath: 'assets/images/kvartirs.jpg',
       title: 'Простота использования',
       description: 'Интуитивно понятный интерфейс для удобной работы',
     ),
@@ -71,188 +73,191 @@ class _SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // общий фон берём из текущей страницы, но вы можете указать любую картинку
+    final backgroundPath = _pages[_currentPage].imagePath;
+
     return Scaffold(
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Кнопка Пропустить
-            Align(
-              alignment: Alignment.topRight,
-              child: TextButton(
-                onPressed: _skip,
-                child: Text(
-                  'Пропустить',
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 16.sp,
+      body: Stack(
+        children: [
+          // фоновая картинка на весь экран
+          Positioned.fill(
+            child: Image.asset(
+              backgroundPath,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return const SizedBox.shrink();
+              },
+            ),
+          ),
+          SafeArea(
+            child: Column(
+              children: [
+                // Кнопка Пропустить
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    margin:
+                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20.r),
+                      color: Colors.white70,
+                    ),
+                    child: TextButton(
+                      onPressed: _skip,
+                      child: Text(
+                        'Пропустить',
+                        style: TextStyle(
+                          color: Colors.blueAccent,
+                          fontSize: 16.sp,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-              ),
-            ),
-            // Страницы
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() {
-                    _currentPage = index;
-                  });
-                },
-                itemCount: _pages.length,
-                itemBuilder: (context, index) {
-                  return _buildPage(_pages[index]);
-                },
-              ),
-            ),
-            // Индикатор страниц
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(
-                _pages.length,
-                (index) => AnimatedContainer(
-                  duration: const Duration(milliseconds: 300),
-                  margin: EdgeInsets.symmetric(horizontal: 4.w),
-                  height: 8.h,
-                  width: _currentPage == index ? 24.w : 8.w,
-                  decoration: BoxDecoration(
-                    color: _currentPage == index
-                        ? Theme.of(context).primaryColor
-                        : Colors.grey[300],
-                    borderRadius: BorderRadius.circular(4.r),
+                // Страницы
+                SizedBox(height: 250.h),
+                Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPage = index;
+                      });
+                    },
+                    itemCount: _pages.length,
+                    itemBuilder: (context, index) {
+                      return _buildPage(_pages[index]);
+                    },
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 40.h),
-            // Кнопки Назад/Далее
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24.w),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Кнопка Назад
-                  _currentPage > 0
-                      ? TextButton(
-                          onPressed: _previousPage,
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.arrow_back_ios,
-                                size: 18.sp,
-                                color: Theme.of(context).primaryColor,
+
+                // Индикатор страниц
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(
+                    _pages.length,
+                    (index) => AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: EdgeInsets.symmetric(horizontal: 4.w),
+                      height: 8.h,
+                      width: _currentPage == index ? 24.w : 8.w,
+                      decoration: BoxDecoration(
+                        color: _currentPage == index
+                            ? Color(0xFF54B435)
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(4.r),
+                      ),
+                    ),
+                  ),
+                ),
+
+                // Кнопки Назад/Далее
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 24.w),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Кнопка Назад
+                      _currentPage > 0
+                          ? TextButton(
+                              onPressed: _previousPage,
+                              child: Row(
+                                children: [
+                                  Icon(
+                                    Icons.arrow_back_ios,
+                                    size: 18.sp,
+                                    color: Colors.white,
+                                  ),
+                                  Text(
+                                    'Назад',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Назад',
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 16.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                            )
+                          : const SizedBox(width: 80),
+                      // Кнопка Далее/Начать
+                      ElevatedButton(
+                        onPressed: _nextPage,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF54B435),
+                          foregroundColor: Colors.white,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 32.w,
+                            vertical: 16.h,
                           ),
-                        )
-                      : const SizedBox(width: 80),
-                  // Кнопка Далее/Начать
-                  ElevatedButton(
-                    onPressed: _nextPage,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 32.w,
-                        vertical: 16.h,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30.r),
+                          ),
+                        ),
+                        child: Text(
+                          _currentPage == _pages.length - 1
+                              ? 'Начать'
+                              : 'Далее',
+                          style: TextStyle(
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                       ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30.r),
-                      ),
-                    ),
-                    child: Text(
-                      _currentPage == _pages.length - 1 ? 'Начать' : 'Далее',
-                      style: TextStyle(
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                SizedBox(height: 10.h),
+              ],
             ),
-            SizedBox(height: 40.h),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildPage(OnboardingPage page) {
-    return Padding(
+    // содержимое страницы без отдельной картинки, фон уже в Scaffold
+    return Container(
+      decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Colors.white54,
+              Color.fromARGB(255, 168, 209, 178),
+            ],
+          ),
+          borderRadius: BorderRadius.circular(20.r)),
       padding: EdgeInsets.symmetric(horizontal: 32.w),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          // Картинка
-          Container(
-            width: 280.w,
-            height: 280.w,
-            decoration: BoxDecoration(
-              color: Colors.grey[200],
-              borderRadius: BorderRadius.circular(20.r),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20.r),
-              child: Image.asset(
-                page.imagePath,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  // Заглушка, если картинка не найдена
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.image,
-                          size: 64.sp,
-                          color: Colors.grey[400],
-                        ),
-                        SizedBox(height: 8.h),
-                        Text(
-                          'Добавь картинку',
-                          style: TextStyle(
-                            color: Colors.grey[500],
-                            fontSize: 14.sp,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Заголовок
+            Text(
+              page.title,
+              style: TextStyle(
+                fontSize: 28.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.black87,
               ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          SizedBox(height: 48.h),
-          // Заголовок
-          Text(
-            page.title,
-            style: TextStyle(
-              fontSize: 28.sp,
-              fontWeight: FontWeight.bold,
-              color: Colors.black87,
+            SizedBox(height: 16.h),
+            // Описание
+            Text(
+              page.description,
+              style: TextStyle(
+                fontSize: 16.sp,
+                color: Colors.grey[600],
+                height: 1.5,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 16.h),
-          // Описание
-          Text(
-            page.description,
-            style: TextStyle(
-              fontSize: 16.sp,
-              color: Colors.grey[600],
-              height: 1.5,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
