@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "998556760800",
+    "project_id": "kvartant-1a7b7",
+    "storage_bucket": "kvartant-1a7b7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:998556760800:android:29a019d77b8734010fee85",
+        "android_client_info": {
+          "package_name": "com.example.u_kvartant"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1WJZTbdEb2icoFhuJIHeItp0VvugOfhY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
