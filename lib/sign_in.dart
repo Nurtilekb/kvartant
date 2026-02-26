@@ -94,7 +94,8 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
       }
     } catch (e) {
       if (mounted) {
-        _showMessage('Ошибка входа через Apple: $e');
+        // _showMessage('Ошибка входа через Apple: $e');
+        print("Apple login test mode");
       }
     } finally {
       if (mounted) {
@@ -132,6 +133,7 @@ class _ExactSignInScreenState extends State<ExactSignInScreen> {
           _showMessage('Неверный пароль');
         } else {
           _showMessage('Ошибка: ${e.message}');
+          print(e.message);
         }
       }
     } catch (e) {
