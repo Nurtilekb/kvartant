@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'home_page.dart';
+
 /// Экран регистрации через Firebase
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -25,16 +27,17 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       // Создание пользователя в Firebase Auth
-      final UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
       // Обновление имени пользователя
       if (userCredential.user != null) {
-        await userCredential.user!.updateDisplayName(_nameController.text.trim());
-        
+        await userCredential.user!
+            .updateDisplayName(_nameController.text.trim());
+
         // Отправка email для подтверждения (опционально)
         // await userCredential.user!.sendEmailVerification();
       }
@@ -47,9 +50,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
             backgroundColor: Colors.green,
           ),
         );
-        
+
         // Переход на главный экран
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => const HomeScreen()),
+          (route) => false,
+        );
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -327,7 +333,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Text(
                       "Already have an account? ",
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                      style:
+                          TextStyle(color: Colors.grey.shade600, fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () {
