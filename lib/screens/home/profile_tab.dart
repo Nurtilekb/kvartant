@@ -1,0 +1,115 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/widgets/profile_menu_item.dart';
+
+/// Вкладка Профиль
+class ProfileTab extends StatelessWidget {
+  const ProfileTab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey[100],
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          'Профиль',
+          style: TextStyle(
+            fontSize: 24.sp,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+        centerTitle: false,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          children: [
+            // Аватар и имя
+            Container(
+              padding: EdgeInsets.all(20.w),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16.r),
+              ),
+              child: Column(
+                children: [
+                  CircleAvatar(
+                    radius: 50.r,
+                    backgroundColor: const Color(0xFF54B435),
+                    child: Icon(
+                      Icons.person,
+                      size: 50.sp,
+                      color: Colors.white,
+                    ),
+                  ),
+                  SizedBox(height: 16.h),
+                  Text(
+                    'Иван Иванов',
+                    style: TextStyle(
+                      fontSize: 20.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  SizedBox(height: 4.h),
+                  Text(
+                    'ivan@example.com',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      color: Colors.grey[600],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 16.h),
+
+            // Меню профиля
+            ProfileMenuItem(
+              icon: Icons.person_outline,
+              title: 'Редактировать профиль',
+              onTap: () {},
+            ),
+            ProfileMenuItem(
+              icon: Icons.home_outlined,
+              title: 'Мои объявления',
+              onTap: () {},
+            ),
+            ProfileMenuItem(
+              icon: Icons.history,
+              title: 'История просмотров',
+              onTap: () {},
+            ),
+            ProfileMenuItem(
+              icon: Icons.settings_outlined,
+              title: 'Настройки',
+              onTap: () {},
+            ),
+            ProfileMenuItem(
+              icon: Icons.help_outline,
+              title: 'Помощь',
+              onTap: () {},
+            ),
+            ProfileMenuItem(
+              icon: Icons.logout,
+              title: 'Выйти',
+              onTap: () {},
+              isRed: true,
+            ),
+          ],
+        ),
+      ),
+      floatingActionButton: Container(
+        margin: EdgeInsets.only(bottom: 60.h),
+        child: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: const Color(0xFF54B435),
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+}
