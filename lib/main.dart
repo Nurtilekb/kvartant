@@ -1,4 +1,5 @@
 import 'package:_kvartant/firebase_options.dart';
+import 'package:_kvartant/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -43,22 +44,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-// Главный экран приложения (замени на свой)
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Главная'),
-      ),
-      body: const Center(
-        child: Text('Добро пожаловать!'),
-      ),
-    );
-  }
-}
 
 // // // Главный экран приложения (замени на свой)
 // class HomeScreen extends StatelessWidget {
