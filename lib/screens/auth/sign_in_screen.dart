@@ -3,7 +3,6 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-/// Экран входа с Google, Apple и регистрацией через Firebase
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
 
@@ -16,10 +15,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  // Вход через Google с Firebase
   Future<void> _signInWithGoogle() async {
     if (_isLoading) return;
-
     setState(() => _isLoading = true);
 
     try {
@@ -40,40 +37,28 @@ class _SignInScreenState extends State<SignInScreen> {
 
         await FirebaseAuth.instance.signInWithCredential(credential);
 
-        if (mounted) {
-          _navigateToHome();
-        }
+        if (mounted) _navigateToHome();
       } else {
-        if (mounted) {
-          _showMessage('Вход через Google отменён');
-        }
+        _showMessage('Вход через Google отменён');
       }
     } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        _showMessage('Ошибка Firebase: ${e.message}');
-      }
+      _showMessage('Ошибка Firebase: ${e.message}');
     } catch (e) {
-      if (mounted) {
-        _showMessage('Ошибка входа через Google: $e');
-      }
+      _showMessage('Ошибка входа через Google: $e');
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // Вход через Apple с Firebase
   Future<void> _signInWithApple() async {
     if (_isLoading) return;
-
     setState(() => _isLoading = true);
 
     try {
       final credential = await SignInWithApple.getAppleIDCredential(
         scopes: [
-          AppleIDAuthorizationScopes.fullName,
           AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
         ],
       );
 
@@ -84,25 +69,16 @@ class _SignInScreenState extends State<SignInScreen> {
 
       await FirebaseAuth.instance.signInWithCredential(oauthCredential);
 
-      if (mounted) {
-        _navigateToHome();
-      }
+      if (mounted) _navigateToHome();
     } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        _showMessage('Ошибка Firebase: ${e.message}');
-      }
+      _showMessage('Ошибка Firebase: ${e.message}');
     } catch (e) {
-      if (mounted) {
-        _showMessage('Ошибка входа через Apple: $e');
-      }
+      _showMessage('Ошибка входа через Apple: $e');
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // Вход по email/password через Firebase
   Future<void> _signInWithEmail() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
@@ -120,47 +96,33 @@ class _SignInScreenState extends State<SignInScreen> {
         password: password,
       );
 
-      if (mounted) {
-        _navigateToHome();
-      }
+      if (mounted) _navigateToHome();
     } on FirebaseAuthException catch (e) {
-      if (mounted) {
-        if (e.code == 'user-not-found') {
-          _showMessage('Пользователь не найден. Зарегистрируйтесь.');
-        } else if (e.code == 'wrong-password') {
-          _showMessage('Неверный пароль');
-        } else {
-          _showMessage('Ошибка: ${e.message}');
-        }
+      if (e.code == 'user-not-found') {
+        _showMessage('Пользователь не найден');
+      } else if (e.code == 'wrong-password') {
+        _showMessage('Неверный пароль');
+      } else {
+        _showMessage('Ошибка: ${e.message}');
       }
     } catch (e) {
-      if (mounted) {
-        _showMessage('Ошибка входа: $e');
-      }
+      _showMessage('Ошибка входа: $e');
     } finally {
-      if (mounted) {
-        setState(() => _isLoading = false);
-      }
+      if (mounted) setState(() => _isLoading = false);
     }
   }
 
-  // Переход на главный экран
   void _navigateToHome() {
     Navigator.of(context).pushReplacementNamed('/home');
   }
 
-  // Переход на экран регистрации
   void _navigateToRegister() {
     Navigator.of(context).pushNamed('/register');
   }
 
-  // Показать сообщение
   void _showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        backgroundColor: Colors.red,
-      ),
+      SnackBar(content: Text(message)),
     );
   }
 
@@ -177,231 +139,69 @@ class _SignInScreenState extends State<SignInScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 40),
-              const Spacer(flex: 1),
-
-              // Приветственный заголовок
+              const SizedBox(height: 60),
               const Text(
                 'Hi, Welcome Back! 🥰',
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 28,
                   fontWeight: FontWeight.bold,
-                  color: Colors.black,
                 ),
-                textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
-
-              // Подзаголовок
+              const SizedBox(height: 10),
               const Text(
                 'Lorem ipsum dolor sit amet',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
                 textAlign: TextAlign.center,
+                style: TextStyle(color: Colors.grey),
               ),
               const SizedBox(height: 40),
-
-              // Метка Email
-              const Text(
-                'Email',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
+              const Text('Email'),
               const SizedBox(height: 8),
-
-              // Поле ввода Email
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'Enter your email address',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.blue),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
+                decoration: const InputDecoration(
+                  hintText: 'Enter your email',
+                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Метка Password
-              const Text(
-                'Password',
-                style: TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black87,
-                ),
-              ),
+              const Text('Password'),
               const SizedBox(height: 8),
-
-              // Поле ввода Password
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   hintText: 'Enter your password',
-                  hintStyle: const TextStyle(color: Colors.grey),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.grey),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: BorderSide(color: Colors.grey.shade300),
-                  ),
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                    borderSide: const BorderSide(color: Colors.blue),
-                  ),
-                  filled: true,
-                  fillColor: Colors.white,
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
+                  border: OutlineInputBorder(),
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Кнопка "Continue with Email"
               ElevatedButton(
                 onPressed: _isLoading ? null : _signInWithEmail,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  elevation: 0,
-                ),
                 child: _isLoading
-                    ? const SizedBox(
-                        height: 20,
-                        width: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
-                        ),
-                      )
-                    : const Text(
-                        'Continue with Email',
-                        style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.w500),
-                      ),
+                    ? const CircularProgressIndicator()
+                    : const Text('Continue with Email'),
               ),
               const SizedBox(height: 30),
-
-              // Разделитель "Or continue with"
-              Row(
-                children: [
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'Or continue with',
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ),
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
-                ],
-              ),
-              const SizedBox(height: 30),
-
-              // Кнопка "Continue with Google"
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithGoogle,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey.shade300),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: Colors.white,
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      'G',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red,
-                      ),
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'Continue with Google',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                  ],
-                ),
+                child: const Text('Continue with Google'),
               ),
               const SizedBox(height: 12),
-
-              // Кнопка "Continue with Apple"
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithApple,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey.shade300),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: Colors.white,
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.apple, size: 24),
-                    SizedBox(width: 8),
-                    Text(
-                      'Continue with Apple',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
-                  ],
-                ),
+                child: const Text('Continue with Apple'),
               ),
-
-              const Spacer(flex: 2),
-
-              // Строка "Don’t have an account? Sign Up"
+              const SizedBox(height: 40),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Don’t have an account? ",
-                    style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
-                  ),
+                  const Text("Don’t have an account? "),
                   GestureDetector(
                     onTap: _navigateToRegister,
                     child: const Text(
@@ -409,13 +209,12 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: TextStyle(
                         color: Colors.blue,
                         fontWeight: FontWeight.bold,
-                        fontSize: 14,
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 40),
             ],
           ),
         ),
