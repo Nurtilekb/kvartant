@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:_kvartant/widgets/profile_menu_item.dart';
 
+import '../../language_scren.dart';
+
 /// Вкладка Профиль
 class ProfileTab extends StatelessWidget {
   const ProfileTab({super.key});
@@ -85,7 +87,10 @@ class ProfileTab extends StatelessWidget {
             ProfileMenuItem(
               icon: Icons.settings_outlined,
               title: 'Настройки',
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LanguageScreen()));
+              },
             ),
             ProfileMenuItem(
               icon: Icons.help_outline,
