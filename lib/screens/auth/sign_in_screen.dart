@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:_kvartant/screens/home/main_screen.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+
 // Если нужен вход через Apple, раскомментируйте следующую строку и соответствующий метод
 // import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
@@ -64,7 +67,7 @@ class _SignInScreenState extends State<SignInScreen> {
   // --------------------------------------------------------------------------
   // Вход через Apple (закомментировано, но оставлено для справки)
   // --------------------------------------------------------------------------
-  /*
+
   Future<void> _signInWithApple() async {
     if (_isLoading) return;
     setState(() => _isLoading = true);
@@ -98,7 +101,6 @@ class _SignInScreenState extends State<SignInScreen> {
       if (mounted) setState(() => _isLoading = false);
     }
   }
-  */
 
   // --------------------------------------------------------------------------
   // Вход по Email/Password
@@ -148,7 +150,9 @@ class _SignInScreenState extends State<SignInScreen> {
   // Навигация
   // --------------------------------------------------------------------------
   void _navigateToHome() {
-    Navigator.of(context).pushReplacementNamed('/home');
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (context) => const MainScreen()),
+    );
   }
 
   void _navigateToRegister() {
@@ -334,7 +338,7 @@ class _SignInScreenState extends State<SignInScreen> {
               const SizedBox(height: 12),
 
               // Кнопка Continue with Apple (закомментирована, если не нужна)
-              /*
+
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithApple,
                 style: OutlinedButton.styleFrom(
@@ -364,7 +368,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ],
                 ),
               ),
-              */
+
               const SizedBox(height: 40),
 
               // Ссылка на регистрацию
