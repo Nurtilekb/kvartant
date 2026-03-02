@@ -20,7 +20,7 @@ class _HomeTabState extends State<HomeTab> {
   bool _hasActiveFilters = false;
 
   // Список объявлений
-  List<Advertisement> _advertisements = Advertisement.getSampleList();
+  final List<Advertisement> _advertisements = Advertisement.getSampleList();
 
   // Фильтрованный список
   List<Advertisement> get _filteredAds {

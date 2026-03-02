@@ -89,7 +89,7 @@ class ProfileTab extends StatelessWidget {
               title: 'Настройки',
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LanguageScreen()));
+                    MaterialPageRoute(builder: (context) => const LanguageScreen()));
               },
             ),
             ProfileMenuItem(

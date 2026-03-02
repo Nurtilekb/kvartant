@@ -9,7 +9,7 @@ class ChatsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Chat> _chats = Chat.getSampleList();
+    final List<Chat> chats = Chat.getSampleList();
 
     return Scaffold(
       backgroundColor: Colors.grey[100],
@@ -28,9 +28,9 @@ class ChatsTab extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: 8.h),
-        itemCount: _chats.length,
+        itemCount: chats.length,
         itemBuilder: (context, index) {
-          final chat = _chats[index];
+          final chat = chats[index];
           return ChatListItem(
             chat: chat,
             onTap: () {
