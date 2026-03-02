@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -16,23 +14,22 @@ class _SplashScreenState extends State<SplashScreen> {
 
   final List<OnboardingPage> _pages = [
     OnboardingPage(
-      // Замени на свою картинку
-      imagePath: 'assets/images/kvartiras.jpg',
-      title: 'Добро пожаловать',
-      description: 'Откройте для себя удивительный мир возможностей',
+      imagePath: 'assets/images/kvartiras.jpg', // замените на свои изображения
+      title: 'Kvartant',
+      description:
+          "Аренда без посредников Найди квартиру напрямую у владельца.Без комиссий. Без риелторов. Без переплат.",
     ),
     OnboardingPage(
-      // Замени на свою картинку
       imagePath: 'assets/images/kvartirs.jpg',
-      title: 'Простота использования',
-      description: 'Интуитивно понятный интерфейс для удобной работы',
+      title: 'Прямое общение',
+      description:
+          'Связывайся с владельцами напрямую.Договаривайся об условиях быстро и честно',
     ),
     OnboardingPage(
-      // Замени на свою картинку
-      imagePath: 'assets/images/prototype.jpg',
-      title: 'Начнём',
-      description: 'Готовы начать? Присоединяйтесь к нам прямо сейчас!',
-    ),
+        imagePath: 'assets/images/prototype.jpg',
+        title: 'Просто. Безопасно. Удобно.',
+        description:
+            "Kvartant — новая культура аренды жилья.Твой дом начинается здесь. "),
   ];
 
   @override
@@ -48,7 +45,7 @@ class _SplashScreenState extends State<SplashScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      _goToHome();
+      _goToSignIn();
     }
   }
 
@@ -61,61 +58,60 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
-  void _goToHome() {
-    // Переход на главный экран приложения
-    // Замени на свой экран
+  void _goToSignIn() {
+    // Переход на экран входа (замените на нужный маршрут)
     Navigator.of(context).pushReplacementNamed('/signin');
   }
 
-  void _skip() {
-    _goToHome();
-  }
+  void _skip() => _goToSignIn();
 
   @override
   Widget build(BuildContext context) {
-    // общий фон берём из текущей страницы, но вы можете указать любую картинку
+    // Фоновая картинка меняется в зависимости от текущей страницы
     final backgroundPath = _pages[_currentPage].imagePath;
 
     return Scaffold(
       body: Stack(
         children: [
-          // фоновая картинка на весь экран
+          // Фоновое изображение на весь экран
           Positioned.fill(
             child: Image.asset(
               backgroundPath,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const SizedBox.shrink();
-              },
+              errorBuilder: (context, error, stackTrace) => Container(
+                color: Colors.grey.shade300,
+              ),
             ),
           ),
           SafeArea(
             child: Column(
               children: [
-                // Кнопка Пропустить
+                // Кнопка "Пропустить"
                 Align(
                   alignment: Alignment.topRight,
-                  child: Container(
-                    margin:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20.r),
-                      color: Colors.white70,
-                    ),
+                  child: Padding(
+                    padding: EdgeInsets.all(16.w),
                     child: TextButton(
                       onPressed: _skip,
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.white70,
+                        foregroundColor: Colors.blueAccent,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 8.h,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.r),
+                        ),
+                      ),
                       child: Text(
                         'Пропустить',
-                        style: TextStyle(
-                          color: Colors.blueAccent,
-                          fontSize: 16.sp,
-                        ),
+                        style: TextStyle(fontSize: 16.sp),
                       ),
                     ),
                   ),
                 ),
-                // Страницы
-                SizedBox(height: 250.h),
+                // Основной контент (страницы)
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
@@ -130,7 +126,6 @@ class _SplashScreenState extends State<SplashScreen> {
                     },
                   ),
                 ),
-
                 // Индикатор страниц
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -150,28 +145,29 @@ class _SplashScreenState extends State<SplashScreen> {
                     ),
                   ),
                 ),
-
-                // Кнопки Назад/Далее
+                SizedBox(height: 20.h),
+                // Кнопки "Назад" и "Далее/Начать"
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 24.w),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      // Кнопка Назад
+                      // Кнопка "Назад" (появляется только не на первой странице)
                       _currentPage > 0
                           ? TextButton(
                               onPressed: _previousPage,
+                              style: TextButton.styleFrom(
+                                foregroundColor: Colors.white,
+                              ),
                               child: Row(
                                 children: [
                                   Icon(
                                     Icons.arrow_back_ios,
                                     size: 18.sp,
-                                    color: Colors.white,
                                   ),
                                   Text(
                                     'Назад',
                                     style: TextStyle(
-                                      color: Colors.white,
                                       fontSize: 16.sp,
                                       fontWeight: FontWeight.w600,
                                     ),
@@ -179,8 +175,8 @@ class _SplashScreenState extends State<SplashScreen> {
                                 ],
                               ),
                             )
-                          : const SizedBox(width: 80),
-                      // Кнопка Далее/Начать
+                          : const SizedBox(width: 80), // резервируем место
+                      // Кнопка "Далее" / "Начать"
                       ElevatedButton(
                         onPressed: _nextPage,
                         style: ElevatedButton.styleFrom(
@@ -217,44 +213,67 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Widget _buildPage(OnboardingPage page) {
-    // содержимое страницы без отдельной картинки, фон уже в Scaffold
-    return Container(
-      decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Colors.white54,
-              Color.fromARGB(255, 168, 209, 178),
-            ],
-          ),
-          borderRadius: BorderRadius.circular(20.r)),
-      padding: EdgeInsets.symmetric(horizontal: 32.w),
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 2, sigmaY: 2),
+    return Center(
+      child: Container(
+        width: double.infinity,
+        margin: EdgeInsets.symmetric(horizontal: 28.w),
+        padding: EdgeInsets.symmetric(horizontal: 24.w, vertical: 32.h),
+        decoration: BoxDecoration(
+          color: Colors.white.withOpacity(0.92),
+          borderRadius: BorderRadius.circular(24.r),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 20,
+              offset: Offset(0, 10),
+            ),
+          ],
+        ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Заголовок
+            /// Title
             Text(
               page.title,
+              textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 28.sp,
-                fontWeight: FontWeight.bold,
+                fontSize: 30.sp,
+                fontWeight: FontWeight.w700,
+                letterSpacing: 0.5,
                 color: Colors.black87,
               ),
-              textAlign: TextAlign.center,
             ),
-            SizedBox(height: 16.h),
-            // Описание
-            Text(
-              page.description,
-              style: TextStyle(
-                fontSize: 16.sp,
-                color: Colors.grey[600],
-                height: 1.5,
+
+            SizedBox(height: 20.h),
+
+            /// Divider line (маленький акцент)
+            Container(
+              width: 40.w,
+              height: 4.h,
+              decoration: BoxDecoration(
+                color: Colors.black87,
+                borderRadius: BorderRadius.circular(10.r),
               ),
-              textAlign: TextAlign.center,
+            ),
+
+            SizedBox(height: 24.h),
+
+            /// Description
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: 300.w,
+              ),
+              child: Text(
+                page.description,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 17.sp,
+                  height: 1.6,
+                  fontWeight: FontWeight.w400,
+                  color: Colors.grey.shade800,
+                ),
+              ),
             ),
           ],
         ),
