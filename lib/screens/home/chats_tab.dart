@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 import 'package:_kvartant/models/chat.dart';
 import 'package:_kvartant/widgets/chat_list_item.dart';
 
@@ -9,32 +9,24 @@ class ChatsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Chat> chats = Chat.getSampleList();
+    final List<Chat> _chats = Chat.getSampleList();
 
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.grey100,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
-        title: Text(
-          'Чаты',
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
+        title: Text('Чаты', style: AppTextStyles.title),
         centerTitle: false,
       ),
       body: ListView.builder(
-        padding: EdgeInsets.symmetric(vertical: 8.h),
-        itemCount: chats.length,
+        padding: EdgeInsets.symmetric(vertical: AppSizes.sm),
+        itemCount: _chats.length,
         itemBuilder: (context, index) {
-          final chat = chats[index];
+          final chat = _chats[index];
           return ChatListItem(
             chat: chat,
             onTap: () {
-              // Переход к чату
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Открыть чат с ${chat.name}')),
               );
@@ -43,11 +35,12 @@ class ChatsTab extends StatelessWidget {
         },
       ),
       floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 60.h),
+        margin: EdgeInsets.only(bottom: AppSizes.bottomNavHeight + AppSizes.lg),
         child: FloatingActionButton(
           onPressed: () {},
-          backgroundColor: const Color(0xFF54B435),
-          child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: AppColors.primary,
+          child: const Icon(Icons.add, color: AppColors.white),
+          heroTag: 'add_chat',
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

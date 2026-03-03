@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 /// Bottom Sheet для фильтров
 class FilterBottomSheet extends StatefulWidget {
@@ -21,40 +21,35 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     '30 000 - 50 000 ₽',
     '50 000 - 80 000 ₽',
     '80 000 - 120 000 ₽',
-    'Более 120 000 ₽',
+    'Более 120 000 ₽'
   ];
-
   final List<String> _roomOptions = [
     'Любое',
     '1 ком.',
     '2 ком.',
     '3 ком.',
-    '4+ ком.',
+    '4+ ком.'
   ];
-
   final List<String> _typeOptions = [
     'Все',
     'Квартира',
     'Дом',
     'Комната',
-    'Студия',
+    'Студия'
   ];
 
-  void _resetFilters() {
-    setState(() {
-      _selectedPriceRange = 0;
-      _selectedRooms = 0;
-      _selectedType = 'Все';
-    });
-  }
+  void _resetFilters() => setState(() {
+        _selectedPriceRange = 0;
+        _selectedRooms = 0;
+        _selectedType = 'Все';
+      });
 
   void _applyFilters() {
-    final filters = {
+    widget.onApply?.call({
       'type': _selectedType,
       'priceRange': _selectedPriceRange,
-      'rooms': _selectedRooms,
-    };
-    widget.onApply?.call(filters);
+      'rooms': _selectedRooms
+    });
     Navigator.pop(context);
   }
 
@@ -63,153 +58,75 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     return Container(
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24.r)),
+        color: AppColors.white,
+        borderRadius:
+            BorderRadius.vertical(top: Radius.circular(AppSizes.radiusXxl)),
       ),
       child: Column(
         children: [
           // Ручка
           Container(
-            margin: EdgeInsets.only(top: 12.h),
-            width: 40.w,
-            height: 4.h,
+            margin: EdgeInsets.only(top: AppSizes.md),
+            width: AppSizes.radiusXl,
+            height: AppSizes.radiusSm,
             decoration: BoxDecoration(
-              color: Colors.grey[300],
-              borderRadius: BorderRadius.circular(2.r),
-            ),
+                color: AppColors.grey300,
+                borderRadius: BorderRadius.circular(AppSizes.radiusSm)),
           ),
           // Заголовок
           Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(AppSizes.lg),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Фильтры',
-                  style: TextStyle(
-                    fontSize: 20.sp,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text('Фильтры', style: AppTextStyles.title),
                 TextButton(
-                  onPressed: _resetFilters,
-                  child: Text(
-                    'Сбросить',
-                    style: TextStyle(
-                      color: Colors.grey[600],
-                      fontSize: 14.sp,
-                    ),
-                  ),
-                ),
+                    onPressed: _resetFilters,
+                    child: Text('Сбросить', style: AppTextStyles.bodySmall)),
               ],
             ),
           ),
           // Контент
           Expanded(
             child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(horizontal: 16.w),
+              padding: EdgeInsets.symmetric(horizontal: AppSizes.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Тип жилья
-                  _buildSectionTitle('Тип жилья'),
-                  SizedBox(height: 12.h),
-                  Wrap(
-                    spacing: 8.w,
-                    children: _typeOptions.map((type) {
-                      final isSelected = _selectedType == type;
-                      return ChoiceChip(
-                        label: Text(type),
-                        selected: isSelected,
-                        selectedColor: const Color(0xFF54B435).withOpacity(0.2),
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? const Color(0xFF54B435)
-                              : Colors.black,
-                        ),
-                        onSelected: (selected) {
-                          setState(() => _selectedType = type);
-                        },
-                      );
-                    }).toList(),
-                  ),
-                  SizedBox(height: 24.h),
-
-                  // Цена
-                  _buildSectionTitle('Цена'),
-                  SizedBox(height: 12.h),
-                  Wrap(
-                    spacing: 8.w,
-                    runSpacing: 8.h,
-                    children: List.generate(_priceRanges.length, (index) {
-                      final isSelected = _selectedPriceRange == index;
-                      return ChoiceChip(
-                        label: Text(_priceRanges[index]),
-                        selected: isSelected,
-                        selectedColor: const Color(0xFF54B435).withOpacity(0.2),
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? const Color(0xFF54B435)
-                              : Colors.black,
-                          fontSize: 12.sp,
-                        ),
-                        onSelected: (selected) {
-                          setState(() => _selectedPriceRange = index);
-                        },
-                      );
-                    }),
-                  ),
-                  SizedBox(height: 24.h),
-
-                  // Количество комнат
-                  _buildSectionTitle('Количество комнат'),
-                  SizedBox(height: 12.h),
-                  Wrap(
-                    spacing: 8.w,
-                    children: List.generate(_roomOptions.length, (index) {
-                      final isSelected = _selectedRooms == index;
-                      return ChoiceChip(
-                        label: Text(_roomOptions[index]),
-                        selected: isSelected,
-                        selectedColor: const Color(0xFF54B435).withOpacity(0.2),
-                        labelStyle: TextStyle(
-                          color: isSelected
-                              ? const Color(0xFF54B435)
-                              : Colors.black,
-                        ),
-                        onSelected: (selected) {
-                          setState(() => _selectedRooms = index);
-                        },
-                      );
-                    }),
-                  ),
-                  SizedBox(height: 32.h),
+                  _buildSection(
+                      'Тип жилья',
+                      _typeOptions,
+                      _typeOptions.indexOf(_selectedType),
+                      (i) => setState(() => _selectedType = _typeOptions[i])),
+                  SizedBox(height: AppSizes.xxl),
+                  _buildSection('Цена', _priceRanges, _selectedPriceRange,
+                      (i) => setState(() => _selectedPriceRange = i)),
+                  SizedBox(height: AppSizes.xxl),
+                  _buildSection(
+                      'Количество комнат',
+                      _roomOptions,
+                      _selectedRooms,
+                      (i) => setState(() => _selectedRooms = i)),
+                  SizedBox(height: AppSizes.xxxl),
                 ],
               ),
             ),
           ),
-          // Кнопка применить
+          // Кнопка
           Padding(
-            padding: EdgeInsets.all(16.w),
+            padding: EdgeInsets.all(AppSizes.lg),
             child: SizedBox(
               width: double.infinity,
-              height: 56.h,
+              height: AppSizes.bottomNavHeight,
               child: ElevatedButton(
                 onPressed: _applyFilters,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF54B435),
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd)),
                 ),
-                child: Text(
-                  'Применить',
-                  style: TextStyle(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
+                child: Text('Применить', style: AppTextStyles.button),
               ),
             ),
           ),
@@ -218,13 +135,30 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     );
   }
 
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 16.sp,
-        fontWeight: FontWeight.w600,
-      ),
+  Widget _buildSection(String title, List<String> options, int selected,
+      Function(int) onSelect) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(title, style: AppTextStyles.subtitle),
+        SizedBox(height: AppSizes.md),
+        Wrap(
+          spacing: AppSizes.sm,
+          runSpacing: AppSizes.sm,
+          children: List.generate(options.length, (index) {
+            final isSelected = selected == index;
+            return ChoiceChip(
+              label: Text(options[index],
+                  style: TextStyle(
+                      color: isSelected ? AppColors.primary : AppColors.black,
+                      fontSize: AppSizes.textSm)),
+              selected: isSelected,
+              selectedColor: AppColors.primary.withOpacity(0.2),
+              onSelected: (_) => onSelect(index),
+            );
+          }),
+        ),
+      ],
     );
   }
 }

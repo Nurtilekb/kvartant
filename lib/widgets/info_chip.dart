@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 /// Info Chip виджет - отображает иконку с текстом
 class InfoChip extends StatelessWidget {
@@ -15,20 +15,17 @@ class InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(8.r),
+        color: AppColors.grey100,
+        borderRadius: BorderRadius.circular(AppSizes.radiusMd),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 16.sp, color: Colors.grey[600]),
-          SizedBox(width: 4.w),
-          Text(
-            label,
-            style: TextStyle(fontSize: 12.sp, color: Colors.grey[600]),
-          ),
+          Icon(icon, size: AppSizes.iconSm, color: AppColors.grey600),
+          SizedBox(width: AppSizes.xs),
+          Text(label, style: TextStyle(fontSize: AppSizes.textSm, color: AppColors.grey600)),
         ],
       ),
     );

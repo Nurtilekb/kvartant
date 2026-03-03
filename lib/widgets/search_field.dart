@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 /// Search Field виджет
 class SearchField extends StatelessWidget {
@@ -20,24 +20,21 @@ class SearchField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(12.r),
+        color: AppColors.grey100,
+        borderRadius: BorderRadius.circular(AppSizes.radiusLg),
       ),
       child: TextField(
         controller: controller,
         onChanged: onChanged,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(color: Colors.grey[500], fontSize: 14.sp),
-          prefixIcon: Icon(Icons.search, color: Colors.grey[500]),
+          hintStyle: TextStyle(color: AppColors.grey500, fontSize: AppSizes.textMd),
+          prefixIcon: Icon(Icons.search, color: AppColors.grey500),
           suffixIcon: controller.text.isNotEmpty
-              ? IconButton(
-                  icon: Icon(Icons.clear, color: Colors.grey[500]),
-                  onPressed: onClear,
-                )
+              ? IconButton(icon: Icon(Icons.clear, color: AppColors.grey500), onPressed: onClear)
               : null,
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+          contentPadding: EdgeInsets.symmetric(horizontal: AppSizes.lg, vertical: AppSizes.md),
         ),
       ),
     );

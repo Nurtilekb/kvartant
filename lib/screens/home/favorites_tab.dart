@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 import 'package:_kvartant/models/advertisement.dart';
 import 'package:_kvartant/widgets/advertisement_card.dart';
 
@@ -12,7 +12,6 @@ class FavoritesTab extends StatefulWidget {
 }
 
 class _FavoritesTabState extends State<FavoritesTab> {
-  // Список избранных объявлений
   late List<Advertisement> _favorites;
 
   @override
@@ -33,26 +32,17 @@ class _FavoritesTabState extends State<FavoritesTab> {
   }
 
   void _toggleFavorite(String id) {
-    setState(() {
-      _favorites.removeWhere((ad) => ad.id == id);
-    });
+    setState(() => _favorites.removeWhere((ad) => ad.id == id));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.grey100,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
-        title: Text(
-          'Избранное',
-          style: TextStyle(
-            fontSize: 24.sp,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
-        ),
+        title: Text('Избранное', style: AppTextStyles.title),
         centerTitle: false,
       ),
       body: _favorites.isEmpty
@@ -60,24 +50,14 @@ class _FavoritesTabState extends State<FavoritesTab> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.favorite_border,
-                    size: 64.sp,
-                    color: Colors.grey[400],
-                  ),
-                  SizedBox(height: 16.h),
-                  Text(
-                    'Нет избранных объявлений',
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Colors.grey[600],
-                    ),
-                  ),
+                  Icon(Icons.favorite_border, size: AppSizes.iconXxl, color: AppColors.grey400),
+                  SizedBox(height: AppSizes.lg),
+                  Text('Нет избранных объявлений', style: AppTextStyles.body),
                 ],
               ),
             )
           : ListView.builder(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(AppSizes.lg),
               itemCount: _favorites.length,
               itemBuilder: (context, index) {
                 final ad = _favorites[index];
@@ -88,11 +68,12 @@ class _FavoritesTabState extends State<FavoritesTab> {
               },
             ),
       floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 60.h),
+        margin: EdgeInsets.only(bottom: AppSizes.bottomNavHeight + AppSizes.lg),
         child: FloatingActionButton(
           onPressed: () {},
-          backgroundColor: const Color(0xFF54B435),
-          child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: AppColors.primary,
+          child: const Icon(Icons.add, color: AppColors.white),
+          heroTag: 'add_fav',
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

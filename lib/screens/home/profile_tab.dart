@@ -1,8 +1,8 @@
+import 'package:_kvartant/core/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:_kvartant/widgets/profile_menu_item.dart';
-
-import '../../language_scren.dart';
 
 /// Вкладка Профиль
 class ProfileTab extends StatelessWidget {
@@ -40,7 +40,7 @@ class ProfileTab extends StatelessWidget {
                 children: [
                   CircleAvatar(
                     radius: 50.r,
-                    backgroundColor: const Color(0xFF54B435),
+                    backgroundColor: AppColors.primary,
                     child: Icon(
                       Icons.person,
                       size: 50.sp,
@@ -87,10 +87,7 @@ class ProfileTab extends StatelessWidget {
             ProfileMenuItem(
               icon: Icons.settings_outlined,
               title: 'Настройки',
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => const LanguageScreen()));
-              },
+              onTap: () {},
             ),
             ProfileMenuItem(
               icon: Icons.help_outline,
@@ -100,7 +97,37 @@ class ProfileTab extends StatelessWidget {
             ProfileMenuItem(
               icon: Icons.logout,
               title: 'Выйти',
-              onTap: () {},
+              onTap: () async {
+                final confirm = await showDialog<bool>(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Выход'),
+                    content: const Text('Вы уверены, что хотите выйти?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(false),
+                        child: const Text('Отмена'),
+                      ),
+                      TextButton(
+                        onPressed: () => Navigator.of(ctx).pop(true),
+                        child: const Text(
+                          'Выйти',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+                if (confirm == true) {
+                  await FirebaseAuth.instance.signOut();
+                  if (context.mounted) {
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                      '/signin',
+                      (route) => false,
+                    );
+                  }
+                }
+              },
               isRed: true,
             ),
           ],
@@ -110,8 +137,9 @@ class ProfileTab extends StatelessWidget {
         margin: EdgeInsets.only(bottom: 60.h),
         child: FloatingActionButton(
           onPressed: () {},
-          backgroundColor: const Color(0xFF54B435),
+          backgroundColor: AppColors.primary,
           child: const Icon(Icons.add, color: Colors.white),
+          heroTag: 'sdc',
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

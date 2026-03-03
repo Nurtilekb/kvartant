@@ -1,5 +1,6 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 import 'package:_kvartant/widgets/bottom_nav_item.dart';
 import 'package:_kvartant/screens/home/home_tab.dart';
 import 'package:_kvartant/screens/home/favorites_tab.dart';
@@ -28,6 +29,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
         children: _tabs,
@@ -38,47 +40,62 @@ class _MainScreenState extends State<MainScreen> {
 
   Widget _buildBottomNavBar() {
     return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 10,
-            offset: const Offset(0, -2),
-          ),
-        ],
+      margin: EdgeInsets.only(bottom: AppSizes.bottomNavMargin),
+      padding: EdgeInsets.only(
+        left: AppSizes.xxl,
+        right: AppSizes.xxl,
+        bottom: AppSizes.md,
       ),
-      child: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              BottomNavItem(
-                icon: Icons.home,
-                label: 'Главная',
-                isSelected: _currentIndex == 0,
-                onTap: () => setState(() => _currentIndex = 0),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppSizes.bottomNavRadius),
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
+          child: Container(
+            height: AppSizes.bottomNavHeight,
+            decoration: BoxDecoration(
+              color: AppColors.white.withOpacity(0.25),
+              borderRadius: BorderRadius.circular(AppSizes.bottomNavRadius),
+              border: Border.all(
+                color: AppColors.white.withOpacity(0.4),
+                width: 1.2,
               ),
-              BottomNavItem(
-                icon: Icons.favorite,
-                label: 'Избранное',
-                isSelected: _currentIndex == 1,
-                onTap: () => setState(() => _currentIndex = 1),
-              ),
-              BottomNavItem(
-                icon: Icons.chat,
-                label: 'Чаты',
-                isSelected: _currentIndex == 2,
-                onTap: () => setState(() => _currentIndex = 2),
-              ),
-              BottomNavItem(
-                icon: Icons.person,
-                label: 'Профиль',
-                isSelected: _currentIndex == 3,
-                onTap: () => setState(() => _currentIndex = 3),
-              ),
-            ],
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.black.withOpacity(0.12),
+                  blurRadius: 24,
+                  offset: const Offset(0, 8),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                BottomNavItem(
+                  icon: Icons.home_rounded,
+                  label: 'Главная',
+                  isSelected: _currentIndex == 0,
+                  onTap: () => setState(() => _currentIndex = 0),
+                ),
+                BottomNavItem(
+                  icon: Icons.favorite_rounded,
+                  label: 'Избранное',
+                  isSelected: _currentIndex == 1,
+                  onTap: () => setState(() => _currentIndex = 1),
+                ),
+                BottomNavItem(
+                  icon: Icons.chat_rounded,
+                  label: 'Чаты',
+                  isSelected: _currentIndex == 2,
+                  onTap: () => setState(() => _currentIndex = 2),
+                ),
+                BottomNavItem(
+                  icon: Icons.person_rounded,
+                  label: 'Профиль',
+                  isSelected: _currentIndex == 3,
+                  onTap: () => setState(() => _currentIndex = 3),
+                ),
+              ],
+            ),
           ),
         ),
       ),

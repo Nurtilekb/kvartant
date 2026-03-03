@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 /// Элемент меню профиля
 class ProfileMenuItem extends StatelessWidget {
@@ -19,22 +19,13 @@ class ProfileMenuItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 8.h),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.r),
-      ),
+      margin: EdgeInsets.only(bottom: AppSizes.sm),
+      decoration: AppDecorations.card,
       child: ListTile(
         onTap: onTap,
-        leading: Icon(icon, color: isRed ? Colors.red : Colors.grey[600]),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 16.sp,
-            color: isRed ? Colors.red : Colors.black,
-          ),
-        ),
-        trailing: Icon(Icons.chevron_right, color: Colors.grey[400]),
+        leading: Icon(icon, color: isRed ? AppColors.error : AppColors.grey600),
+        title: Text(title, style: TextStyle(fontSize: AppSizes.textLg, color: isRed ? AppColors.error : AppColors.black)),
+        trailing: Icon(Icons.chevron_right, color: AppColors.grey400),
       ),
     );
   }

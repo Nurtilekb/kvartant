@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 /// Кнопка фильтра в Stack (с индикатором)
 class FilterButton extends StatelessWidget {
@@ -16,38 +16,29 @@ class FilterButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Кнопка
         Container(
-          width: 50.w,
-          height: 50.h,
+          width: AppSizes.bottomNavHeight,
+          height: AppSizes.bottomNavHeight,
           decoration: BoxDecoration(
-            color: const Color(0xFF54B435),
-            borderRadius: BorderRadius.circular(12.r),
+            color: AppColors.primary,
+            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
           ),
           child: IconButton(
             onPressed: onPressed,
-            icon: Icon(
-              Icons.tune,
-              color: Colors.white,
-              size: 24.sp,
-            ),
+            icon: Icon(Icons.tune, color: AppColors.white, size: AppSizes.iconLg),
           ),
         ),
-        // Индикатор активных фильтров
         if (hasActiveFilters)
           Positioned(
-            right: 8.w,
-            top: 8.h,
+            right: AppSizes.sm,
+            top: AppSizes.sm,
             child: Container(
-              width: 10.w,
-              height: 10.h,
+              width: AppSizes.textSm,
+              height: AppSizes.textSm,
               decoration: BoxDecoration(
-                color: Colors.red,
+                color: AppColors.error,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: Colors.white,
-                  width: 1.5,
-                ),
+                border: Border.all(color: AppColors.white, width: 1.5),
               ),
             ),
           ),

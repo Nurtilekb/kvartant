@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-
-import '../home/main_screen.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 /// Экран регистрации через Firebase
 class RegisterScreen extends StatefulWidget {
@@ -26,14 +25,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
     setState(() => _isLoading = true);
 
     try {
-      // Создание пользователя в Firebase Auth
       final UserCredential userCredential =
           await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
-      // Обновление имени пользователя
       if (userCredential.user != null) {
         await userCredential.user!
             .updateDisplayName(_nameController.text.trim());
@@ -41,17 +38,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Регистрация успешна! Добро пожаловать!'),
-            backgroundColor: Colors.green,
+          SnackBar(
+            content: const Text('Регистрация успешна! Добро пожаловать!'),
+            backgroundColor: AppColors.success,
           ),
         );
 
-        // Переход на главный экран
-        Navigator.pushAndRemoveUntil(
-            context,
-            MaterialPageRoute(builder: (context) => const MainScreen()),
-            (route) => false);
+        Navigator.of(context).pushReplacementNamed('/home');
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -86,7 +79,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: Colors.red,
+        backgroundColor: AppColors.error,
       ),
     );
   }
@@ -102,252 +95,122 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.white,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: const Icon(Icons.arrow_back, color: AppColors.black),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: const Text(
-          'Create Account',
-          style: TextStyle(
-            color: Colors.black,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        title: Text('Create Account', style: AppTextStyles.title),
         centerTitle: true,
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.xxl),
           child: Form(
             key: _formKey,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                const SizedBox(height: 20),
+                SizedBox(height: AppSizes.lg),
 
                 // Заголовок
-                const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Create your account to get started',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 32),
+                Text('Sign Up', style: AppTextStyles.headline, textAlign: TextAlign.center),
+                SizedBox(height: AppSizes.sm),
+                Text('Create your account to get started', style: AppTextStyles.bodySmall, textAlign: TextAlign.center),
+                SizedBox(height: AppSizes.xxl),
 
                 // Поле имени
-                const Text(
-                  'Full Name',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
+                Text('Full Name', style: AppTextStyles.label),
+                SizedBox(height: AppSizes.sm),
                 TextFormField(
                   controller: _nameController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your full name',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Colors.blue),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
+                  decoration: AppDecorations.inputField(hintText: 'Enter your full name'),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Введите имя';
-                    }
+                    if (value == null || value.isEmpty) return 'Введите имя';
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: AppSizes.lg),
 
                 // Поле Email
-                const Text(
-                  'Email',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
+                Text('Email', style: AppTextStyles.label),
+                SizedBox(height: AppSizes.sm),
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(
-                    hintText: 'Enter your email',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Colors.blue),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
-                  ),
+                  decoration: AppDecorations.inputField(hintText: 'Enter your email'),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Введите email';
-                    }
-                    if (!value.contains('@')) {
-                      return 'Введите корректный email';
-                    }
+                    if (value == null || value.isEmpty) return 'Введите email';
+                    if (!value.contains('@')) return 'Введите корректный email';
                     return null;
                   },
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: AppSizes.lg),
 
                 // Поле пароля
-                const Text(
-                  'Password',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Colors.black87,
-                  ),
-                ),
-                const SizedBox(height: 8),
+                Text('Password', style: AppTextStyles.label),
+                SizedBox(height: AppSizes.sm),
                 TextFormField(
                   controller: _passwordController,
                   obscureText: _obscurePassword,
-                  decoration: InputDecoration(
+                  decoration: AppDecorations.inputField(
                     hintText: 'Enter your password',
-                    hintStyle: const TextStyle(color: Colors.grey),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    enabledBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide(color: Colors.grey.shade300),
-                    ),
-                    focusedBorder: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: Colors.blue),
-                    ),
-                    contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 14,
-                    ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: Colors.grey,
+                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        color: AppColors.grey500,
                       ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
+                      onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
                     ),
                   ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Введите пароль';
-                    }
-                    if (value.length < 6) {
-                      return 'Пароль должен быть не менее 6 символов';
-                    }
+                    if (value == null || value.isEmpty) return 'Введите пароль';
+                    if (value.length < 6) return 'Пароль должен быть не менее 6 символов';
                     return null;
                   },
                 ),
-                const SizedBox(height: 32),
+                SizedBox(height: AppSizes.xxl),
 
                 // Кнопка регистрации
                 ElevatedButton(
                   onPressed: _isLoading ? null : _register,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: AppColors.black,
+                    foregroundColor: AppColors.white,
+                    padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                     ),
                     elevation: 0,
                   ),
                   child: _isLoading
-                      ? const SizedBox(
+                      ? SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor:
-                                AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor: AlwaysStoppedAnimation<Color>(AppColors.white),
                           ),
                         )
-                      : const Text(
-                          'Sign Up',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
+                      : Text('Sign Up', style: AppTextStyles.button),
                 ),
-                const SizedBox(height: 20),
+                SizedBox(height: AppSizes.lg),
 
                 // Ссылка на вход
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      "Already have an account? ",
-                      style:
-                          TextStyle(color: Colors.grey.shade600, fontSize: 14),
-                    ),
+                    Text("Already have an account? ", style: AppTextStyles.bodySmall),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text(
-                        'Sign In',
-                        style: TextStyle(
-                          color: Colors.blue,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                        ),
-                      ),
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Text('Sign In', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
-                const SizedBox(height: 40),
+                SizedBox(height: AppSizes.xxxl),
               ],
             ),
           ),

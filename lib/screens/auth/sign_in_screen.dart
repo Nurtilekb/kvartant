@@ -1,11 +1,8 @@
-import 'package:_kvartant/screens/auth/fil_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-
-// Если нужен вход через Apple, раскомментируйте следующую строку и соответствующий метод
-// import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -41,7 +38,6 @@ class _SignInScreenState extends State<SignInScreen> {
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
 
-      // Проверяем, что токены получены
       if (googleAuth.idToken == null) {
         _showMessage('Не удалось получить токен Google');
         return;
@@ -65,9 +61,8 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   // --------------------------------------------------------------------------
-  // Вход через Apple (закомментировано, но оставлено для справки)
+  // Вход через Apple
   // --------------------------------------------------------------------------
-
   Future<void> _signInWithApple() async {
     if (_isLoading) return;
     setState(() => _isLoading = true);
@@ -87,7 +82,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
       final oauthCredential = OAuthProvider("apple.com").credential(
         idToken: credential.identityToken,
-        // accessToken не требуется для Firebase, используем только idToken
       );
 
       await FirebaseAuth.instance.signInWithCredential(oauthCredential);
@@ -107,7 +101,7 @@ class _SignInScreenState extends State<SignInScreen> {
   // --------------------------------------------------------------------------
   Future<void> _signInWithEmail() async {
     final email = _emailController.text.trim();
-    final password = _passwordController.text; // пароль не обрезаем
+    final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
       _showMessage('Введите email и пароль');
@@ -150,10 +144,7 @@ class _SignInScreenState extends State<SignInScreen> {
   // Навигация
   // --------------------------------------------------------------------------
   void _navigateToHome() {
-    Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => const ProfileEditScreen()),
-        (route) => false);
+    Navigator.of(context).pushReplacementNamed('/home');
   }
 
   void _navigateToRegister() {
@@ -161,13 +152,13 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   // --------------------------------------------------------------------------
-  // Утилита для показа сообщений
+  // Сообщения
   // --------------------------------------------------------------------------
   void _showMessage(String message, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError ? Colors.red : null,
+        backgroundColor: isError ? AppColors.error : null,
       ),
     );
   }
@@ -182,217 +173,148 @@ class _SignInScreenState extends State<SignInScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
+          padding: EdgeInsets.symmetric(horizontal: AppSizes.xxl),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 60),
+              SizedBox(height: AppSizes.xxxl),
               // Приветствие
-              const Text(
+              Text(
                 'Hi, Welcome Back! 🥰',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTextStyles.headline,
               ),
-              const SizedBox(height: 8),
-              const Text(
+              SizedBox(height: AppSizes.sm),
+              Text(
                 'Lorem ipsum dolor sit amet',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.grey),
+                style: AppTextStyles.bodySmall,
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: AppSizes.xxxl),
 
               // Поле Email
-              const Text(
-                'Email',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 8),
+              Text('Email', style: AppTextStyles.label),
+              SizedBox(height: AppSizes.sm),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: AppDecorations.inputField(
                   hintText: 'Enter your email',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: AppSizes.lg),
 
               // Поле Password
-              const Text(
-                'Password',
-                style: TextStyle(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 14,
-                ),
-              ),
-              const SizedBox(height: 8),
+              Text('Password', style: AppTextStyles.label),
+              SizedBox(height: AppSizes.sm),
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: AppDecorations.inputField(
                   hintText: 'Enter your password',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  contentPadding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
                 ),
               ),
-              const SizedBox(height: 20),
+              SizedBox(height: AppSizes.lg),
 
               // Кнопка Continue with Email
               ElevatedButton(
                 onPressed: _isLoading ? null : _signInWithEmail,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: AppColors.black,
+                  foregroundColor: AppColors.white,
+                  padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                   ),
                   elevation: 0,
                 ),
                 child: _isLoading
-                    ? const SizedBox(
+                    ? SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                              AlwaysStoppedAnimation<Color>(AppColors.white),
                         ),
                       )
-                    : const Text(
-                        'Continue with Email',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                    : const Text('Continue with Email'),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: AppSizes.xxl),
 
               // Разделитель
               Row(
                 children: [
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                  Expanded(child: Divider(color: AppColors.grey300)),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: EdgeInsets.symmetric(horizontal: AppSizes.lg),
                     child: Text(
                       'Or continue with',
-                      style: TextStyle(color: Colors.grey.shade600),
+                      style: AppTextStyles.bodySmall,
                     ),
                   ),
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
+                  Expanded(child: Divider(color: AppColors.grey300)),
                 ],
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: AppSizes.xxl),
 
               // Кнопка Continue with Google
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithGoogle,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey.shade300),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: Colors.white,
-                ),
+                style: AppDecorations.secondaryButton,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    // Убедитесь, что иконка google.png есть в assets/icons/
-                    Image.asset(
-                      'assets/icons/google.png',
-                      width: 24,
-                      height: 24,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error, size: 24),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Continue with Google',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
+                    const Text('G',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.red)),
+                    SizedBox(width: AppSizes.sm),
+                    const Text('Continue with Google',
+                        style: TextStyle(fontSize: 16, color: AppColors.black)),
                   ],
                 ),
               ),
-              const SizedBox(height: 12),
+              SizedBox(height: AppSizes.md),
 
-              // Кнопка Continue with Apple (закомментирована, если не нужна)
-
+              // Кнопка Continue with Apple
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithApple,
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: Colors.grey.shade300),
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: Colors.white,
-                ),
+                style: AppDecorations.secondaryButton,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Image.asset(
-                      'assets/icons/apple.png',
-                      width: 24,
-                      height: 24,
-                      errorBuilder: (context, error, stackTrace) =>
-                          const Icon(Icons.error, size: 24),
-                    ),
-                    const SizedBox(width: 8),
-                    const Text(
-                      'Continue with Apple',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
+                    const Icon(Icons.apple, size: 24),
+                    SizedBox(width: AppSizes.sm),
+                    const Text('Continue with Apple',
+                        style: TextStyle(fontSize: 16, color: AppColors.black)),
                   ],
                 ),
               ),
-
-              const SizedBox(height: 40),
+              SizedBox(height: AppSizes.xxxl),
 
               // Ссылка на регистрацию
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text(
-                    "Don’t have an account? ",
-                    style: TextStyle(color: Colors.grey.shade600),
-                  ),
+                  Text("Don’t have an account? ",
+                      style: AppTextStyles.bodySmall),
                   GestureDetector(
                     onTap: _navigateToRegister,
-                    child: const Text(
-                      'Sign Up',
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: const Text('Sign Up',
+                        style: TextStyle(
+                            color: AppColors.primary,
+                            fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: AppSizes.xxxl),
             ],
           ),
         ),

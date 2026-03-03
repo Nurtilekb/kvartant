@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 
 /// Bottom Navigation Item виджет
 class BottomNavItem extends StatelessWidget {
@@ -25,15 +25,15 @@ class BottomNavItem extends StatelessWidget {
         children: [
           Icon(
             icon,
-            color: isSelected ? const Color(0xFF54B435) : Colors.grey[400],
-            size: 24.sp,
+            color: isSelected ? AppColors.primary : AppColors.grey400,
+            size: AppSizes.iconLg,
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: AppSizes.xs),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12.sp,
-              color: isSelected ? const Color(0xFF54B435) : Colors.grey[400],
+              fontSize: AppSizes.textXs,
+              color: isSelected ? AppColors.primary : AppColors.grey400,
               fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
             ),
           ),

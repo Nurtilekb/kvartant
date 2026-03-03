@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:_kvartant/core/app_theme.dart';
 import 'package:_kvartant/models/advertisement.dart';
 import 'package:_kvartant/widgets/advertisement_card.dart';
 import 'package:_kvartant/widgets/search_field.dart';
@@ -40,10 +40,7 @@ class _HomeTabState extends State<HomeTab> {
       backgroundColor: Colors.transparent,
       builder: (context) => FilterBottomSheet(
         onApply: (filters) {
-          // Применение фильтров
-          setState(() {
-            _hasActiveFilters = true;
-          });
+          setState(() => _hasActiveFilters = true);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Фильтры применены')),
           );
@@ -70,18 +67,18 @@ class _HomeTabState extends State<HomeTab> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: AppColors.grey100,
       body: SafeArea(
         child: Column(
           children: [
             // Верхняя часть с поиском
             Container(
-              padding: EdgeInsets.all(16.w),
+              padding: EdgeInsets.all(AppSizes.lg),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.white,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
+                    color: AppColors.black.withOpacity(0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),
@@ -90,15 +87,8 @@ class _HomeTabState extends State<HomeTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Поиск объявлений',
-                    style: TextStyle(
-                      fontSize: 24.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
-                    ),
-                  ),
-                  SizedBox(height: 16.h),
+                  Text('Поиск объявлений', style: AppTextStyles.title),
+                  SizedBox(height: AppSizes.md),
                   // Search Field и кнопка фильтра
                   Row(
                     children: [
@@ -106,16 +96,14 @@ class _HomeTabState extends State<HomeTab> {
                         child: SearchField(
                           controller: _searchController,
                           hintText: 'Поиск по названию или адресу...',
-                          onChanged: (value) {
-                            setState(() => _searchQuery = value);
-                          },
+                          onChanged: (value) => setState(() => _searchQuery = value),
                           onClear: () {
                             _searchController.clear();
                             setState(() => _searchQuery = '');
                           },
                         ),
                       ),
-                      SizedBox(width: 12.w),
+                      SizedBox(width: AppSizes.md),
                       FilterButton(
                         onPressed: _showFilterSheet,
                         hasActiveFilters: _hasActiveFilters,
@@ -132,24 +120,14 @@ class _HomeTabState extends State<HomeTab> {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(
-                            Icons.search_off,
-                            size: 64.sp,
-                            color: Colors.grey[400],
-                          ),
-                          SizedBox(height: 16.h),
-                          Text(
-                            'Объявления не найдены',
-                            style: TextStyle(
-                              fontSize: 16.sp,
-                              color: Colors.grey[600],
-                            ),
-                          ),
+                          Icon(Icons.search_off, size: AppSizes.iconXxl, color: AppColors.grey400),
+                          SizedBox(height: AppSizes.lg),
+                          Text('Объявления не найдены', style: AppTextStyles.body),
                         ],
                       ),
                     )
                   : ListView.builder(
-                      padding: EdgeInsets.all(16.w),
+                      padding: EdgeInsets.all(AppSizes.lg),
                       itemCount: _filteredAds.length,
                       itemBuilder: (context, index) {
                         final ad = _filteredAds[index];
@@ -164,15 +142,16 @@ class _HomeTabState extends State<HomeTab> {
         ),
       ),
       floatingActionButton: Container(
-        margin: EdgeInsets.only(bottom: 60.h),
+        margin: EdgeInsets.only(bottom: AppSizes.bottomNavHeight + AppSizes.lg),
         child: FloatingActionButton(
           onPressed: () {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Добавить новое объявление')),
             );
           },
-          backgroundColor: const Color(0xFF54B435),
-          child: const Icon(Icons.add, color: Colors.white),
+          backgroundColor: AppColors.primary,
+          child: const Icon(Icons.add, color: AppColors.white),
+          heroTag: 'add_ad',
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
