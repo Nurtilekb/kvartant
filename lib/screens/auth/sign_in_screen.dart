@@ -1,7 +1,7 @@
+import 'package:_kvartant/screens/auth/fil_profile.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:_kvartant/screens/home/main_screen.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 
 // Если нужен вход через Apple, раскомментируйте следующую строку и соответствующий метод
@@ -150,9 +150,10 @@ class _SignInScreenState extends State<SignInScreen> {
   // Навигация
   // --------------------------------------------------------------------------
   void _navigateToHome() {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (context) => const MainScreen()),
-    );
+    Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => const ProfileEditScreen()),
+        (route) => false);
   }
 
   void _navigateToRegister() {

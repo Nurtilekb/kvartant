@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -31,6 +32,22 @@ class _SplashScreenState extends State<SplashScreen> {
         description:
             "Kvartant — новая культура аренды жилья.Твой дом начинается здесь. "),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _checkAuthAndRedirect();
+  }
+
+  Future<void> _checkAuthAndRedirect() async {
+    // Небольшая задержка, чтобы splash успел отрисоваться
+    await Future.delayed(const Duration(milliseconds: 300));
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null && mounted) {
+      // Пользователь уже залогинен — сразу на главный экран
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
+  }
 
   @override
   void dispose() {
