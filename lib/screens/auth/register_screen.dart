@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../home/main_screen.dart';
+
 /// Экран регистрации через Firebase
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -25,15 +27,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     try {
       // Создание пользователя в Firebase Auth
-      final UserCredential userCredential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
 
       // Обновление имени пользователя
       if (userCredential.user != null) {
-        await userCredential.user!.updateDisplayName(_nameController.text.trim());
+        await userCredential.user!
+            .updateDisplayName(_nameController.text.trim());
       }
 
       if (mounted) {
@@ -45,7 +48,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
 
         // Переход на главный экран
-        Navigator.of(context).pushReplacementNamed('/home');
+        Navigator.pushAndRemoveUntil(
+            context,
+            MaterialPageRoute(builder: (context) => const MainScreen()),
+            (route) => false);
       }
     } on FirebaseAuthException catch (e) {
       if (mounted) {
@@ -261,7 +267,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                     suffixIcon: IconButton(
                       icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                        _obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
                         color: Colors.grey,
                       ),
                       onPressed: () {
@@ -301,7 +309,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           width: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
                           ),
                         )
                       : const Text(
@@ -320,7 +329,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   children: [
                     Text(
                       "Already have an account? ",
-                      style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                      style:
+                          TextStyle(color: Colors.grey.shade600, fontSize: 14),
                     ),
                     GestureDetector(
                       onTap: () {

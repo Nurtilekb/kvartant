@@ -1,10 +1,11 @@
 import 'dart:io';
+import 'package:_kvartant/screens/home/main_screen.dart';
 import 'package:flutter/material.dart';
-// import 'package:image_picker/image_picker.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:image_picker/image_picker.dart';
 // import 'package:cloud_firestore/cloud_firestore.dart';
 // import 'package:firebase_storage/firebase_storage.dart';
-// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileEditScreen extends StatefulWidget {
   const ProfileEditScreen({super.key});
@@ -23,114 +24,11 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
   File? _profileImage;
   bool _isLoading = false;
 
+  static const _green = Color(0xFF54B435);
+
   final List<String> _genders = ['Мужской', 'Женский', 'Другой'];
 
-  // Текущий пользователь
   User? get _currentUser => FirebaseAuth.instance.currentUser;
-
-  @override
-  void initState() {
-    super.initState();
-    // Если пользователь уже заполнял профиль, можно загрузить данные
-    // _loadUserProfile();
-  }
-
-  // Загрузка существующих данных (если есть)
-  // Future<void> _loadUserProfile() async {
-  //   if (_currentUser == null) return;
-
-  //   try {
-  //     final doc = await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(_currentUser!.uid)
-  //         .get();
-
-  //     if (doc.exists) {
-  //       final data = doc.data()!;
-  //       _nameController.text = data['name'] ?? '';
-  //       _phoneController.text = data['phone'] ?? '';
-  //       _cityController.text = data['city'] ?? '';
-  //       _selectedGender = data['gender'];
-  //       // Фото загружается отдельно, но можно показать существующее
-  //       // Для этого нужно получить URL и загрузить через NetworkImage (но здесь упростим)
-  //     }
-  //   } catch (e) {
-  //     print('Ошибка загрузки профиля: $e');
-  //   }
-  // }
-
-  // Future<void> _pickImage() async {
-  //   // final picker = ImagePicker();
-  //   // final pickedFile = await picker.pickImage(source: ImageSource.gallery);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _profileImage = File(pickedFile.path);
-  //     });
-  //   }
-  // }
-
-  // // Future<void> _saveProfile() async {
-  //   if (!_formKey.currentState!.validate()) return;
-  //   if (_currentUser == null) {
-  //     _showMessage('Пользователь не авторизован');
-  //     return;
-  //   }
-
-  //   setState(() => _isLoading = true);
-
-  //   try {
-  //     String? photoUrl;
-
-  //     // 1. Если выбрано новое изображение — загружаем в Storage
-  //     if (_profileImage != null) {
-  //       final storageRef = FirebaseStorage.instance
-  //           .ref()
-  //           .child('users')
-  //           .child(_currentUser!.uid)
-  //           .child('profile.jpg'); // можно добавить временную метку
-
-  //       await storageRef.putFile(_profileImage!);
-  //       photoUrl = await storageRef.getDownloadURL();
-  //     }
-
-  //     // 2. Сохраняем данные в Firestore
-  //     final userData = {
-  //       'name': _nameController.text.trim(),
-  //       'phone': _phoneController.text.trim(),
-  //       'gender': _selectedGender,
-  //       'city': _cityController.text.trim(),
-  //       'updatedAt': FieldValue.serverTimestamp(),
-  //     };
-
-  //     // Если есть фото, добавляем поле photoUrl
-  //     if (photoUrl != null) {
-  //       userData['photoUrl'] = photoUrl;
-  //     }
-
-  //     await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(_currentUser!.uid)
-  //         .set(userData, SetOptions(merge: true));
-
-  //     if (mounted) {
-  //       _showMessage('Профиль успешно сохранён!', isError: false);
-  //       Navigator.pop(context);
-  //     }
-  //   } catch (e) {
-  //     _showMessage('Ошибка сохранения: $e');
-  //   } finally {
-  //     if (mounted) setState(() => _isLoading = false);
-  //   }
-  // }
-
-  void _showMessage(String msg, {bool isError = true}) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(msg),
-        backgroundColor: isError ? Colors.red : Colors.green,
-      ),
-    );
-  }
 
   @override
   void dispose() {
@@ -140,168 +38,405 @@ class _ProfileEditScreenState extends State<ProfileEditScreen> {
     super.dispose();
   }
 
+  void _showMessage(String msg, {bool isError = true}) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(msg),
+        backgroundColor: isError ? Colors.redAccent : _green,
+        behavior: SnackBarBehavior.floating,
+        shape:
+            RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.r)),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecoration({
+    required String label,
+    required String hint,
+    required IconData icon,
+  }) {
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      hintStyle: TextStyle(color: Colors.grey[400], fontSize: 14.sp),
+      labelStyle: TextStyle(color: Colors.grey[600], fontSize: 14.sp),
+      prefixIcon: Icon(icon, color: _green, size: 20.sp),
+      filled: true,
+      fillColor: Colors.grey[50],
+      contentPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14.r),
+        borderSide: BorderSide(color: Colors.grey[200]!),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14.r),
+        borderSide: BorderSide(color: Colors.grey[200]!),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14.r),
+        borderSide: const BorderSide(color: _green, width: 1.5),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14.r),
+        borderSide: const BorderSide(color: Colors.redAccent),
+      ),
+      focusedErrorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14.r),
+        borderSide: const BorderSide(color: Colors.redAccent, width: 1.5),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Заполните профиль'),
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-        elevation: 1,
-      ),
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[100],
       body: Stack(
         children: [
-          SingleChildScrollView(
-            padding: const EdgeInsets.all(24.0),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Фото профиля
-                  Stack(
-                    children: [
-                      CircleAvatar(
-                        radius: 60,
-                        backgroundColor: Colors.grey.shade200,
-                        backgroundImage: _profileImage != null
-                            ? FileImage(_profileImage!)
-                            : null,
-                        child: _profileImage == null
-                            ? const Icon(Icons.person,
-                                size: 60, color: Colors.grey)
-                            : null,
+          CustomScrollView(
+            slivers: [
+              // ─── SliverAppBar с аватаром ───────────────────────────────
+              SliverAppBar(
+                expandedHeight: 260.h,
+                pinned: true,
+                backgroundColor: Colors.white,
+                elevation: 0,
+                leading: GestureDetector(
+                  onTap: () => Navigator.pop(context),
+                  child: Container(
+                    margin: EdgeInsets.all(8.w),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.9),
+                      shape: BoxShape.circle,
+                    ),
+                    child: Icon(Icons.arrow_back_ios_new_rounded,
+                        size: 18.sp, color: Colors.black87),
+                  ),
+                ),
+                flexibleSpace: FlexibleSpaceBar(
+                  background: Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Color(0xFF54B435), Color(0xFF2E7D1F)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
-                      Positioned(
-                        bottom: 0,
-                        right: 0,
-                        child: GestureDetector(
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: const BoxDecoration(
-                              color: Colors.blue,
-                              shape: BoxShape.circle,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: 40.h),
+                        // Аватар
+                        Stack(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border:
+                                    Border.all(color: Colors.white, width: 3.w),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.2),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: CircleAvatar(
+                                radius: 55.r,
+                                backgroundColor: Colors.white,
+                                backgroundImage: _profileImage != null
+                                    ? FileImage(_profileImage!)
+                                    : null,
+                                child: _profileImage == null
+                                    ? Icon(Icons.person_rounded,
+                                        size: 55.sp,
+                                        color: const Color(0xFF54B435))
+                                    : null,
+                              ),
                             ),
-                            child: const Icon(
-                              Icons.camera_alt,
-                              color: Colors.white,
-                              size: 20,
+                            Positioned(
+                              bottom: 2,
+                              right: 2,
+                              child: GestureDetector(
+                                onTap: () {
+                                  // _pickImage();
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(7.w),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.15),
+                                        blurRadius: 6,
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(Icons.camera_alt_rounded,
+                                      color: _green, size: 18.sp),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 12.h),
+                        Text(
+                          'Редактировать профиль',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18.sp,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 4.h),
+                        Text(
+                          _currentUser?.email ?? '',
+                          style: TextStyle(
+                            color: Colors.white.withOpacity(0.85),
+                            fontSize: 13.sp,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                title: Text(
+                  'Редактировать профиль',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 17.sp,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              // ─── Форма ────────────────────────────────────────────────
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 16.w, vertical: 20.h),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // ── Секция: Личные данные ──────────────────────
+                        _SectionLabel(label: 'Личные данные'),
+                        SizedBox(height: 12.h),
+
+                        // ФИО
+                        TextFormField(
+                          controller: _nameController,
+                          textCapitalization: TextCapitalization.words,
+                          style: TextStyle(fontSize: 15.sp),
+                          decoration: _inputDecoration(
+                            label: 'ФИО',
+                            hint: 'Введите ваше полное имя',
+                            icon: Icons.person_outline_rounded,
+                          ),
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Введите ФИО'
+                              : null,
+                        ),
+                        SizedBox(height: 14.h),
+
+                        // Телефон
+                        TextFormField(
+                          controller: _phoneController,
+                          keyboardType: TextInputType.phone,
+                          style: TextStyle(fontSize: 15.sp),
+                          decoration: _inputDecoration(
+                            label: 'Номер телефона',
+                            hint: '+996 700 123 456',
+                            icon: Icons.phone_outlined,
+                          ),
+                          validator: (v) {
+                            if (v == null || v.trim().isEmpty) {
+                              return 'Введите телефон';
+                            }
+                            final digits = v.replaceAll(RegExp(r'\D'), '');
+                            if (digits.length < 10) {
+                              return 'Минимум 10 цифр';
+                            }
+                            return null;
+                          },
+                        ),
+                        SizedBox(height: 14.h),
+
+                        // Пол
+                        DropdownButtonFormField<String>(
+                          value: _selectedGender,
+                          style:
+                              TextStyle(fontSize: 15.sp, color: Colors.black87),
+                          decoration: _inputDecoration(
+                            label: 'Пол',
+                            hint: 'Выберите пол',
+                            icon: Icons.wc_rounded,
+                          ),
+                          hint: Text(
+                            'Выберите пол',
+                            style: TextStyle(
+                                color: Colors.grey[400], fontSize: 14.sp),
+                          ),
+                          dropdownColor: Colors.white,
+                          borderRadius: BorderRadius.circular(14.r),
+                          items: _genders.map((g) {
+                            return DropdownMenuItem(
+                              value: g,
+                              child: Text(g),
+                            );
+                          }).toList(),
+                          onChanged: (v) => setState(() => _selectedGender = v),
+                          validator: (v) => v == null ? 'Выберите пол' : null,
+                        ),
+                        SizedBox(height: 24.h),
+
+                        // ── Секция: Местоположение ─────────────────────
+                        _SectionLabel(label: 'Местоположение'),
+                        SizedBox(height: 12.h),
+
+                        // Город
+                        TextFormField(
+                          controller: _cityController,
+                          textCapitalization: TextCapitalization.words,
+                          style: TextStyle(fontSize: 15.sp),
+                          decoration: _inputDecoration(
+                            label: 'Город',
+                            hint: 'Введите ваш город',
+                            icon: Icons.location_city_rounded,
+                          ),
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Введите город'
+                              : null,
+                        ),
+                        SizedBox(height: 32.h),
+
+                        // ── Кнопка сохранения ──────────────────────────
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54.h,
+                          child: ElevatedButton(
+                            onPressed: _isLoading
+                                ? null
+                                : () {
+                                    if (_formKey.currentState?.validate() ??
+                                        false) {
+                                      // _saveProfile();
+                                    } else {
+                                      _showMessage(
+                                          'Пожалуйста, исправьте ошибки в форме');
+                                    }
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const MainScreen()),
+                                        (route) => false);
+                                  },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: _green,
+                              disabledBackgroundColor: _green.withOpacity(0.5),
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14.r),
+                              ),
+                            ),
+                            child: _isLoading
+                                ? SizedBox(
+                                    height: 22.h,
+                                    width: 22.h,
+                                    child: const CircularProgressIndicator(
+                                      strokeWidth: 2.5,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : Text(
+                                    'Сохранить изменения',
+                                    style: TextStyle(
+                                      fontSize: 16.sp,
+                                      fontWeight: FontWeight.w600,
+                                      letterSpacing: 0.3,
+                                    ),
+                                  ),
+                          ),
+                        ),
+                        SizedBox(height: 16.h),
+
+                        // Кнопка отмены
+                        SizedBox(
+                          width: double.infinity,
+                          height: 54.h,
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.grey[700],
+                              side: BorderSide(color: Colors.grey[300]!),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14.r),
+                              ),
+                            ),
+                            child: Text(
+                              'Отмена',
+                              style: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 30),
-
-                  // ФИО
-                  TextFormField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'ФИО',
-                      hintText: 'Введите ваше полное имя',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.person_outline),
-                    ),
-                    validator: (value) =>
-                        (value == null || value.trim().isEmpty)
-                            ? 'Введите ФИО'
-                            : null,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Телефон
-                  TextFormField(
-                    controller: _phoneController,
-                    keyboardType: TextInputType.phone,
-                    decoration: const InputDecoration(
-                      labelText: 'Номер телефона',
-                      hintText: '+7 999 123-45-67',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.phone_outlined),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.trim().isEmpty) {
-                        return 'Введите телефон';
-                      }
-                      final digits = value.replaceAll(RegExp(r'\D'), '');
-                      if (digits.length < 10) {
-                        return 'Минимум 10 цифр';
-                      }
-                      return null;
-                    },
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Пол
-                  DropdownButtonFormField<String>(
-                    value: _selectedGender,
-                    decoration: const InputDecoration(
-                      labelText: 'Пол',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.person_outline),
-                    ),
-                    hint: const Text('Выберите пол'),
-                    items: _genders.map((g) {
-                      return DropdownMenuItem(value: g, child: Text(g));
-                    }).toList(),
-                    onChanged: (value) =>
-                        setState(() => _selectedGender = value),
-                    validator: (value) => value == null ? 'Выберите пол' : null,
-                  ),
-                  const SizedBox(height: 20),
-
-                  // Город
-                  TextFormField(
-                    controller: _cityController,
-                    decoration: const InputDecoration(
-                      labelText: 'Город',
-                      hintText: 'Введите ваш город',
-                      border: OutlineInputBorder(),
-                      prefixIcon: Icon(Icons.location_city),
-                    ),
-                    validator: (value) =>
-                        (value == null || value.trim().isEmpty)
-                            ? 'Введите город'
-                            : null,
-                  ),
-                  const SizedBox(height: 30),
-
-                  // Кнопка сохранения
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      // _isLoading ? null : _saveProfile,
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      child: _isLoading
-                          ? const SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
-                            )
-                          : const Text('Сохранить',
-                              style: TextStyle(fontSize: 16)),
+                        SizedBox(height: 30.h),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: 20),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
+
+          // Overlay загрузки
           if (_isLoading)
             Container(
-              color: Colors.black.withOpacity(0.3),
-              child: const Center(child: CircularProgressIndicator()),
+              color: Colors.black.withOpacity(0.25),
+              child: const Center(
+                child: CircularProgressIndicator(color: _green),
+              ),
             ),
         ],
       ),
+    );
+  }
+}
+
+// ─── Вспомогательный виджет: заголовок секции ─────────────────────────────────
+class _SectionLabel extends StatelessWidget {
+  final String label;
+  const _SectionLabel({required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: [
+        Container(
+          width: 4.w,
+          height: 18.h,
+          decoration: BoxDecoration(
+            color: const Color(0xFF54B435),
+            borderRadius: BorderRadius.circular(4.r),
+          ),
+        ),
+        SizedBox(width: 8.w),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 15.sp,
+            fontWeight: FontWeight.w700,
+            color: Colors.black87,
+          ),
+        ),
+      ],
     );
   }
 }
