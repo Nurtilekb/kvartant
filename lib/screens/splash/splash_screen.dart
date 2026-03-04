@@ -242,7 +242,7 @@ class _SplashScreenState extends State<SplashScreen> {
             BoxShadow(
               color: Colors.black.withOpacity(0.08),
               blurRadius: 20,
-              offset: Offset(0, 10),
+              offset: const Offset(0, 10),
             ),
           ],
         ),

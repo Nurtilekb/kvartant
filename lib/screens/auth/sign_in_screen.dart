@@ -232,7 +232,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   elevation: 0,
                 ),
                 child: _isLoading
-                    ? SizedBox(
+                    ? const SizedBox(
                         height: 20,
                         width: 20,
                         child: CircularProgressIndicator(
@@ -248,7 +248,7 @@ class _SignInScreenState extends State<SignInScreen> {
               // Разделитель
               Row(
                 children: [
-                  Expanded(child: Divider(color: AppColors.grey300)),
+                  const Expanded(child: Divider(color: AppColors.grey300)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: AppSizes.lg),
                     child: Text(
@@ -256,7 +256,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: AppTextStyles.bodySmall,
                     ),
                   ),
-                  Expanded(child: Divider(color: AppColors.grey300)),
+                  const Expanded(child: Divider(color: AppColors.grey300)),
                 ],
               ),
               SizedBox(height: AppSizes.xxl),

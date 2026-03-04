@@ -38,8 +38,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: const Text('Регистрация успешна! Добро пожаловать!'),
+          const SnackBar(
+            content: Text('Регистрация успешна! Добро пожаловать!'),
             backgroundColor: AppColors.success,
           ),
         );
@@ -187,7 +187,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     elevation: 0,
                   ),
                   child: _isLoading
-                      ? SizedBox(
+                      ? const SizedBox(
                           height: 20,
                           width: 20,
                           child: CircularProgressIndicator(
