@@ -5,17 +5,22 @@ import 'package:_kvartant/core/app_theme.dart';
 class InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;
+  final bool compact; // Новый параметр для компактного вида
 
   const InfoChip({
     super.key,
     required this.icon,
     required this.label,
+    this.compact = false,
+    required Color iconColor,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.sm),
+      height: compact ? 28 : 32,
+      padding:
+          EdgeInsets.symmetric(horizontal: AppSizes.md, vertical: AppSizes.xs),
       decoration: BoxDecoration(
         color: AppColors.grey100,
         borderRadius: BorderRadius.circular(AppSizes.radiusMd),
@@ -25,7 +30,9 @@ class InfoChip extends StatelessWidget {
         children: [
           Icon(icon, size: AppSizes.iconSm, color: AppColors.grey600),
           SizedBox(width: AppSizes.xs),
-          Text(label, style: TextStyle(fontSize: AppSizes.textSm, color: AppColors.grey600)),
+          Text(label,
+              style: TextStyle(
+                  fontSize: AppSizes.textSm, color: AppColors.grey600)),
         ],
       ),
     );
