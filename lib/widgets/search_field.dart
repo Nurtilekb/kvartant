@@ -29,9 +29,9 @@ class SearchField extends StatelessWidget {
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(color: AppColors.grey500, fontSize: AppSizes.textMd),
-          prefixIcon: Icon(Icons.search, color: AppColors.grey500),
+          prefixIcon: const Icon(Icons.search, color: AppColors.grey500),
           suffixIcon: controller.text.isNotEmpty
-              ? IconButton(icon: Icon(Icons.clear, color: AppColors.grey500), onPressed: onClear)
+              ? IconButton(icon: const Icon(Icons.clear, color: AppColors.grey500), onPressed: onClear)
               : null,
           border: InputBorder.none,
           contentPadding: EdgeInsets.symmetric(horizontal: AppSizes.lg, vertical: AppSizes.md),
