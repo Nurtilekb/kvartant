@@ -96,7 +96,8 @@ class _HomeTabState extends State<HomeTab> {
                         child: SearchField(
                           controller: _searchController,
                           hintText: 'Поиск по названию или адресу...',
-                          onChanged: (value) => setState(() => _searchQuery = value),
+                          onChanged: (value) =>
+                              setState(() => _searchQuery = value),
                           onClear: () {
                             _searchController.clear();
                             setState(() => _searchQuery = '');
@@ -115,29 +116,39 @@ class _HomeTabState extends State<HomeTab> {
             ),
             // Список объявлений
             Expanded(
-              child: _filteredAds.isEmpty
-                  ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.search_off, size: AppSizes.iconXxl, color: AppColors.grey400),
-                          SizedBox(height: AppSizes.lg),
-                          Text('Объявления не найдены', style: AppTextStyles.body),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      padding: EdgeInsets.all(AppSizes.lg),
-                      itemCount: _filteredAds.length,
-                      itemBuilder: (context, index) {
-                        final ad = _filteredAds[index];
-                        return AdvertisementCard(
-                          advertisement: ad,
-                          onFavorite: () => _toggleFavorite(ad.id),
-                        );
-                      },
-                    ),
-            ),
+                child: _filteredAds.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.search_off,
+                                size: AppSizes.iconXxl,
+                                color: AppColors.grey400),
+                            SizedBox(height: AppSizes.lg),
+                            Text('Объявления не найдены',
+                                style: AppTextStyles.body),
+                          ],
+                        ),
+                      )
+                    : GridView.builder(
+                        padding: EdgeInsets.all(AppSizes.lg),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          childAspectRatio:
+                              0.75, // Соотношение для карточки с фото + текстом
+                          crossAxisSpacing: 12,
+                          mainAxisSpacing: 12,
+                        ),
+                        itemCount: _filteredAds.length,
+                        itemBuilder: (context, index) {
+                          final ad = _filteredAds[index];
+                          return AdvertisementCard(
+                            advertisement: ad,
+                            onFavorite: () => _toggleFavorite(ad.id),
+                          );
+                        },
+                      )),
           ],
         ),
       ),
@@ -150,8 +161,8 @@ class _HomeTabState extends State<HomeTab> {
             );
           },
           backgroundColor: AppColors.primary,
-          child: const Icon(Icons.add, color: AppColors.white),
           heroTag: 'add_ad',
+          child: const Icon(Icons.add, color: AppColors.white),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
