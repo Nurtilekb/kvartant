@@ -1,3 +1,4 @@
+import 'package:_kvartant/widgets/favorites_card.dart';
 import 'package:flutter/material.dart';
 import 'package:_kvartant/core/app_theme.dart';
 import 'package:_kvartant/models/advertisement.dart';
@@ -50,7 +51,8 @@ class _FavoritesTabState extends State<FavoritesTab> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.favorite_border, size: AppSizes.iconXxl, color: AppColors.grey400),
+                  Icon(Icons.favorite_border,
+                      size: AppSizes.iconXxl, color: AppColors.grey400),
                   SizedBox(height: AppSizes.lg),
                   Text('Нет избранных объявлений', style: AppTextStyles.body),
                 ],
@@ -61,9 +63,8 @@ class _FavoritesTabState extends State<FavoritesTab> {
               itemCount: _favorites.length,
               itemBuilder: (context, index) {
                 final ad = _favorites[index];
-                return AdvertisementCard(
+                return FavoritestCard(
                   advertisement: ad,
-                  onFavorite: () => _toggleFavorite(ad.id),
                 );
               },
             ),
@@ -72,8 +73,8 @@ class _FavoritesTabState extends State<FavoritesTab> {
         child: FloatingActionButton(
           onPressed: () {},
           backgroundColor: AppColors.primary,
-          child: const Icon(Icons.add, color: AppColors.white),
           heroTag: 'add_fav',
+          child: const Icon(Icons.add, color: AppColors.white),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

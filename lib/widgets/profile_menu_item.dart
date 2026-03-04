@@ -25,7 +25,7 @@ class ProfileMenuItem extends StatelessWidget {
         onTap: onTap,
         leading: Icon(icon, color: isRed ? AppColors.error : AppColors.grey600),
         title: Text(title, style: TextStyle(fontSize: AppSizes.textLg, color: isRed ? AppColors.error : AppColors.black)),
-        trailing: Icon(Icons.chevron_right, color: AppColors.grey400),
+        trailing: const Icon(Icons.chevron_right, color: AppColors.grey400),
       ),
     );
   }

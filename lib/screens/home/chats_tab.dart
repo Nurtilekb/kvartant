@@ -9,7 +9,7 @@ class ChatsTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final List<Chat> _chats = Chat.getSampleList();
+    final List<Chat> chats = Chat.getSampleList();
 
     return Scaffold(
       backgroundColor: AppColors.grey100,
@@ -21,9 +21,9 @@ class ChatsTab extends StatelessWidget {
       ),
       body: ListView.builder(
         padding: EdgeInsets.symmetric(vertical: AppSizes.sm),
-        itemCount: _chats.length,
+        itemCount: chats.length,
         itemBuilder: (context, index) {
-          final chat = _chats[index];
+          final chat = chats[index];
           return ChatListItem(
             chat: chat,
             onTap: () {
@@ -39,8 +39,8 @@ class ChatsTab extends StatelessWidget {
         child: FloatingActionButton(
           onPressed: () {},
           backgroundColor: AppColors.primary,
-          child: const Icon(Icons.add, color: AppColors.white),
           heroTag: 'add_chat',
+          child: const Icon(Icons.add, color: AppColors.white),
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

@@ -15,7 +15,7 @@ class AppColors {
   // Нейтральные цвета
   static const Color white = Colors.white;
   static const Color black = Colors.black;
-  static const Color black87 = Color(0xFFDE000000);
+  static const Color black87 = Color(0xffde000000);
   static const Color grey = Colors.grey;
   static const Color grey100 = Color(0xFFF5F5F5);
   static const Color grey200 = Color(0xFFEEEEEE);
@@ -94,7 +94,7 @@ class AppTextStyles {
       );
 
   static TextStyle get subtitle => const TextStyle(
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: FontWeight.w600,
         color: AppColors.black,
       );
@@ -129,7 +129,12 @@ class AppTextStyles {
       );
 
   static TextStyle get price => const TextStyle(
-        fontSize: 20,
+        fontSize: 10,
+        fontWeight: FontWeight.bold,
+        color: AppColors.primary,
+      );
+  static TextStyle get pricetofavcard => const TextStyle(
+        fontSize: 16,
         fontWeight: FontWeight.bold,
         color: AppColors.primary,
       );
@@ -143,7 +148,6 @@ class AppDecorations {
 
   // BoxDecoration для карточек
   static BoxDecoration get card => BoxDecoration(
-        color: AppColors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
@@ -256,17 +260,17 @@ class AppDecorations {
 
   // Стиль BottomNavigationBar
   static BottomNavigationBarThemeData get bottomNavBar =>
-      BottomNavigationBarThemeData(
+      const BottomNavigationBarThemeData(
         backgroundColor: AppColors.white,
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.grey400,
         type: BottomNavigationBarType.fixed,
         elevation: 10,
-        selectedLabelStyle: const TextStyle(
+        selectedLabelStyle: TextStyle(
           fontSize: 10,
           fontWeight: FontWeight.w600,
         ),
-        unselectedLabelStyle: const TextStyle(
+        unselectedLabelStyle: TextStyle(
           fontSize: 10,
         ),
       );
