@@ -7,7 +7,6 @@ import 'package:_kvartant/screens/home/favorites_tab.dart';
 import 'package:_kvartant/screens/home/chats_tab.dart';
 import 'package:_kvartant/screens/home/profile_tab.dart';
 
-/// Главный экран с Bottom Navigation Bar
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
 
@@ -20,7 +19,7 @@ class _MainScreenState extends State<MainScreen> {
 
   // Список вкладок
   final List<Widget> _tabs = const [
-    HomeTab(),
+    HomeTabScreen(),
     FavoritesTab(),
     ChatsTab(),
     ProfileTab(),

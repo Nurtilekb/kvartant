@@ -7,14 +7,14 @@ import 'package:_kvartant/widgets/filter_button.dart';
 import 'package:_kvartant/widgets/filter_bottom_sheet.dart';
 
 /// Вкладка Главная (поиск объявлений)
-class HomeTab extends StatefulWidget {
-  const HomeTab({super.key});
+class HomeTabScreen extends StatefulWidget {
+  const HomeTabScreen({super.key});
 
   @override
-  State<HomeTab> createState() => _HomeTabState();
+  State<HomeTabScreen> createState() => _HomeTabScreenState();
 }
 
-class _HomeTabState extends State<HomeTab> {
+class _HomeTabScreenState extends State<HomeTabScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   bool _hasActiveFilters = false;
@@ -156,9 +156,13 @@ class _HomeTabState extends State<HomeTab> {
         margin: EdgeInsets.only(bottom: AppSizes.bottomNavHeight + AppSizes.lg),
         child: FloatingActionButton(
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Добавить новое объявление')),
-            );
+            // showBottomSheet(
+            //   context: context,
+            //   builder: (context) => Container(
+            //       height: 400,
+            //       child: PaymentScreen(amount: 12, orderId: "orderId")
+            //       ),
+            // );
           },
           backgroundColor: AppColors.primary,
           heroTag: 'add_ad',
