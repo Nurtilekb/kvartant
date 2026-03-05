@@ -28,13 +28,20 @@ class SearchField extends StatelessWidget {
         onChanged: onChanged,
         decoration: InputDecoration(
           hintText: hintText,
-          hintStyle: TextStyle(color: AppColors.grey500, fontSize: AppSizes.textMd),
+          hintStyle:
+              TextStyle(color: AppColors.grey500, fontSize: AppSizes.textMd),
           prefixIcon: const Icon(Icons.search, color: AppColors.grey500),
           suffixIcon: controller.text.isNotEmpty
-              ? IconButton(icon: const Icon(Icons.clear, color: AppColors.grey500), onPressed: onClear)
+              ? IconButton(
+                  icon: const Icon(Icons.clear, color: AppColors.grey500),
+                  onPressed: onClear)
               : null,
-          border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: AppSizes.lg, vertical: AppSizes.md),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSizes.radiusLg),
+            borderSide: BorderSide.none,
+          ),
+          contentPadding: EdgeInsets.symmetric(
+              horizontal: AppSizes.lg, vertical: AppSizes.md),
         ),
       ),
     );

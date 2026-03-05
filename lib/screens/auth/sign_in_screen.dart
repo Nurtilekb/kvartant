@@ -1,8 +1,11 @@
+// lib/screens/auth/sign_in_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:_kvartant/core/app_theme.dart';
+import 'package:_kvartant/services/profile_service.dart'; // Добавляем сервис профиля
+import 'package:_kvartant/screens/auth/profile_setup_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -15,10 +18,23 @@ class _SignInScreenState extends State<SignInScreen> {
   bool _isLoading = false;
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final ProfileService _profileService = ProfileService();
 
-  // --------------------------------------------------------------------------
-  // Вход через Google
-  // --------------------------------------------------------------------------
+  // Проверка заполнен ли профиль
+  Future<void> _checkProfileAndNavigate() async {
+    final profile = await _profileService.loadProfile();
+
+    if (profile == null || !profile.isProfileComplete) {
+      // Профиль не заполнен - идем на экран заполнения
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const ProfileSetupScreen()),
+      );
+    } else {
+      // Профиль заполнен - идем на главный экран
+      Navigator.of(context).pushReplacementNamed('/home');
+    }
+  }
+
   Future<void> _signInWithGoogle() async {
     if (_isLoading) return;
     setState(() => _isLoading = true);
@@ -50,7 +66,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       await FirebaseAuth.instance.signInWithCredential(credential);
 
-      if (mounted) _navigateToHome();
+      if (mounted) await _checkProfileAndNavigate();
     } on FirebaseAuthException catch (e) {
       _showMessage('Ошибка Firebase: ${e.message}');
     } catch (e) {
@@ -60,9 +76,6 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Вход через Apple
-  // --------------------------------------------------------------------------
   Future<void> _signInWithApple() async {
     if (_isLoading) return;
     setState(() => _isLoading = true);
@@ -86,7 +99,7 @@ class _SignInScreenState extends State<SignInScreen> {
 
       await FirebaseAuth.instance.signInWithCredential(oauthCredential);
 
-      if (mounted) _navigateToHome();
+      if (mounted) await _checkProfileAndNavigate();
     } on FirebaseAuthException catch (e) {
       _showMessage('Ошибка Firebase: ${e.message}');
     } catch (e) {
@@ -96,9 +109,6 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Вход по Email/Password
-  // --------------------------------------------------------------------------
   Future<void> _signInWithEmail() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text;
@@ -116,7 +126,7 @@ class _SignInScreenState extends State<SignInScreen> {
         password: password,
       );
 
-      if (mounted) _navigateToHome();
+      if (mounted) await _checkProfileAndNavigate();
     } on FirebaseAuthException catch (e) {
       String message;
       switch (e.code) {
@@ -140,96 +150,86 @@ class _SignInScreenState extends State<SignInScreen> {
     }
   }
 
-  // --------------------------------------------------------------------------
-  // Навигация
-  // --------------------------------------------------------------------------
-  void _navigateToHome() {
-    Navigator.of(context).pushReplacementNamed('/home');
-  }
-
   void _navigateToRegister() {
     Navigator.of(context).pushNamed('/register');
   }
 
-  // --------------------------------------------------------------------------
-  // Сообщения
-  // --------------------------------------------------------------------------
   void _showMessage(String message, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError ? AppColors.error : null,
+        backgroundColor: isError ? Colors.red : null,
       ),
     );
   }
 
   @override
-  void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.white,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: AppSizes.xxl),
+          padding: EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: AppSizes.xxxl),
+              SizedBox(height: 60),
               // Приветствие
               Text(
                 'Hi, Welcome Back! 🥰',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.headline,
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: AppSizes.sm),
+              SizedBox(height: 8),
               Text(
                 'Lorem ipsum dolor sit amet',
                 textAlign: TextAlign.center,
-                style: AppTextStyles.bodySmall,
+                style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
-              SizedBox(height: AppSizes.xxxl),
+              SizedBox(height: 40),
 
               // Поле Email
-              Text('Email', style: AppTextStyles.label),
-              SizedBox(height: AppSizes.sm),
+              Text('Email',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              SizedBox(height: 8),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: AppDecorations.inputField(
+                decoration: InputDecoration(
                   hintText: 'Enter your email',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
-              SizedBox(height: AppSizes.lg),
+              SizedBox(height: 16),
 
               // Поле Password
-              Text('Password', style: AppTextStyles.label),
-              SizedBox(height: AppSizes.sm),
+              Text('Password',
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+              SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: AppDecorations.inputField(
+                decoration: InputDecoration(
                   hintText: 'Enter your password',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
                 ),
               ),
-              SizedBox(height: AppSizes.lg),
+              SizedBox(height: 16),
 
               // Кнопка Continue with Email
               ElevatedButton(
                 onPressed: _isLoading ? null : _signInWithEmail,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.black,
-                  foregroundColor: AppColors.white,
-                  padding: EdgeInsets.symmetric(vertical: AppSizes.lg),
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(AppSizes.radiusMd),
+                    borderRadius: BorderRadius.circular(8),
                   ),
-                  elevation: 0,
                 ),
                 child: _isLoading
                     ? const SizedBox(
@@ -238,33 +238,38 @@ class _SignInScreenState extends State<SignInScreen> {
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           valueColor:
-                              AlwaysStoppedAnimation<Color>(AppColors.white),
+                              AlwaysStoppedAnimation<Color>(Colors.white),
                         ),
                       )
                     : const Text('Continue with Email'),
               ),
-              SizedBox(height: AppSizes.xxl),
+              SizedBox(height: 32),
 
               // Разделитель
               Row(
                 children: [
-                  const Expanded(child: Divider(color: AppColors.grey300)),
+                  const Expanded(child: Divider(color: Colors.grey)),
                   Padding(
-                    padding: EdgeInsets.symmetric(horizontal: AppSizes.lg),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Or continue with',
-                      style: AppTextStyles.bodySmall,
+                      style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ),
-                  const Expanded(child: Divider(color: AppColors.grey300)),
+                  const Expanded(child: Divider(color: Colors.grey)),
                 ],
               ),
-              SizedBox(height: AppSizes.xxl),
+              SizedBox(height: 32),
 
               // Кнопка Continue with Google
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithGoogle,
-                style: AppDecorations.secondaryButton,
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -274,47 +279,51 @@ class _SignInScreenState extends State<SignInScreen> {
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.red)),
-                    SizedBox(width: AppSizes.sm),
+                    SizedBox(width: 8),
                     const Text('Continue with Google',
-                        style: TextStyle(fontSize: 16, color: AppColors.black)),
+                        style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
-              SizedBox(height: AppSizes.md),
+              SizedBox(height: 12),
 
               // Кнопка Continue with Apple
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithApple,
-                style: AppDecorations.secondaryButton,
+                style: OutlinedButton.styleFrom(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     const Icon(Icons.apple, size: 24),
-                    SizedBox(width: AppSizes.sm),
+                    SizedBox(width: 8),
                     const Text('Continue with Apple',
-                        style: TextStyle(fontSize: 16, color: AppColors.black)),
+                        style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
-              SizedBox(height: AppSizes.xxxl),
+              SizedBox(height: 40),
 
               // Ссылка на регистрацию
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("Don’t have an account? ",
-                      style: AppTextStyles.bodySmall),
+                      style: TextStyle(fontSize: 14, color: Colors.grey)),
                   GestureDetector(
                     onTap: _navigateToRegister,
                     child: const Text('Sign Up',
                         style: TextStyle(
-                            color: AppColors.primary,
-                            fontWeight: FontWeight.bold)),
+                            color: Colors.blue, fontWeight: FontWeight.bold)),
                   ),
                 ],
               ),
-              SizedBox(height: AppSizes.xxxl),
+              SizedBox(height: 40),
             ],
           ),
         ),
