@@ -1,6 +1,5 @@
 // lib/screens/auth/profile_setup_screen.dart
 import 'package:flutter/material.dart';
-import 'dart:io';
 import 'package:_kvartant/services/profile_service.dart'; // Импортируем сервис
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -20,7 +19,6 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   final _emailController = TextEditingController();
   final _bioController = TextEditingController();
 
-  File? _profileImage;
   String? _selectedGender;
   DateTime? _selectedDate;
   bool _isLoading = false;
@@ -82,7 +80,7 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
 
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('✅ Профиль успешно сохранен!'),
               backgroundColor: Colors.green,
             ),
@@ -114,8 +112,8 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate:
-          _selectedDate ?? DateTime.now().subtract(Duration(days: 365 * 25)),
+      initialDate: _selectedDate ??
+          DateTime.now().subtract(const Duration(days: 365 * 25)),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
     );
@@ -134,13 +132,13 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
-        title: Text('Заполните профиль'),
+        title: const Text('Заполните профиль'),
         centerTitle: true,
       ),
       body: _isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? const Center(child: CircularProgressIndicator())
           : SingleChildScrollView(
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               child: Form(
                 key: _formKey,
                 child: Column(
@@ -161,12 +159,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                             child: GestureDetector(
                               onTap: _pickImage,
                               child: Container(
-                                padding: EdgeInsets.all(4),
-                                decoration: BoxDecoration(
+                                padding: const EdgeInsets.all(4),
+                                decoration: const BoxDecoration(
                                   color: Colors.blue,
                                   shape: BoxShape.circle,
                                 ),
-                                child: Icon(Icons.camera_alt,
+                                child: const Icon(Icons.camera_alt,
                                     color: Colors.white, size: 20),
                               ),
                             ),
@@ -175,12 +173,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
                     // Форма
                     TextFormField(
                       controller: _nameController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Имя',
                         border: OutlineInputBorder(),
                       ),
@@ -191,11 +189,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       },
                     ),
 
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     TextFormField(
                       controller: _phoneController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Телефон',
                         border: OutlineInputBorder(),
                       ),
@@ -207,11 +205,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       },
                     ),
 
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     TextFormField(
                       controller: _emailController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Email',
                         border: OutlineInputBorder(),
                       ),
@@ -225,11 +223,11 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       },
                     ),
 
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     DropdownButtonFormField<String>(
                       value: _selectedGender,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'Пол',
                         border: OutlineInputBorder(),
                       ),
@@ -246,12 +244,12 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                       },
                     ),
 
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     InkWell(
                       onTap: () => _selectDate(context),
                       child: InputDecorator(
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           labelText: 'Дата рождения',
                           border: OutlineInputBorder(),
                         ),
@@ -263,24 +261,24 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                                   ? 'Выберите дату'
                                   : '${_selectedDate!.day}.${_selectedDate!.month}.${_selectedDate!.year}',
                             ),
-                            Icon(Icons.calendar_today),
+                            const Icon(Icons.calendar_today),
                           ],
                         ),
                       ),
                     ),
 
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
 
                     TextFormField(
                       controller: _bioController,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         labelText: 'О себе',
                         border: OutlineInputBorder(),
                       ),
                       maxLines: 3,
                     ),
 
-                    SizedBox(height: 32),
+                    const SizedBox(height: 32),
 
                     SizedBox(
                       width: double.infinity,
@@ -288,9 +286,9 @@ class _ProfileSetupScreenState extends State<ProfileSetupScreen> {
                         onPressed: _saveProfile,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blue,
-                          padding: EdgeInsets.symmetric(vertical: 16),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
                         ),
-                        child: Text('Сохранить'),
+                        child: const Text('Сохранить'),
                       ),
                     ),
                   ],
