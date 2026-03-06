@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:_kvartant/core/app_theme.dart';
 import 'package:_kvartant/services/profile_service.dart'; // Добавляем сервис профиля
 import 'package:_kvartant/screens/auth/profile_setup_screen.dart';
 
@@ -169,29 +168,29 @@ class _SignInScreenState extends State<SignInScreen> {
       backgroundColor: Colors.white,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(horizontal: 24),
+          padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              SizedBox(height: 60),
+              const SizedBox(height: 60),
               // Приветствие
-              Text(
+              const Text(
                 'Hi, Welcome Back! 🥰',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 8),
-              Text(
+              const SizedBox(height: 8),
+              const Text(
                 'Lorem ipsum dolor sit amet',
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
               // Поле Email
-              Text('Email',
+              const Text('Email',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               TextField(
                 controller: _emailController,
                 keyboardType: TextInputType.emailAddress,
@@ -202,12 +201,12 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Поле Password
-              Text('Password',
+              const Text('Password',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               TextField(
                 controller: _passwordController,
                 obscureText: true,
@@ -218,7 +217,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Кнопка Continue with Email
               ElevatedButton(
@@ -226,7 +225,7 @@ class _SignInScreenState extends State<SignInScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -243,12 +242,12 @@ class _SignInScreenState extends State<SignInScreen> {
                       )
                     : const Text('Continue with Email'),
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Разделитель
-              Row(
+              const Row(
                 children: [
-                  const Expanded(child: Divider(color: Colors.grey)),
+                  Expanded(child: Divider(color: Colors.grey)),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
@@ -256,64 +255,63 @@ class _SignInScreenState extends State<SignInScreen> {
                       style: TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ),
-                  const Expanded(child: Divider(color: Colors.grey)),
+                  Expanded(child: Divider(color: Colors.grey)),
                 ],
               ),
-              SizedBox(height: 32),
+              const SizedBox(height: 32),
 
               // Кнопка Continue with Google
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithGoogle,
                 style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('G',
+                    Text('G',
                         style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                             color: Colors.red)),
                     SizedBox(width: 8),
-                    const Text('Continue with Google',
+                    Text('Continue with Google',
                         style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
-              SizedBox(height: 12),
+              const SizedBox(height: 12),
 
               // Кнопка Continue with Apple
               OutlinedButton(
                 onPressed: _isLoading ? null : _signInWithApple,
                 style: OutlinedButton.styleFrom(
-                  padding: EdgeInsets.symmetric(vertical: 16),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisSize: MainAxisSize.min,
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(Icons.apple, size: 24),
+                    Icon(Icons.apple, size: 24),
                     SizedBox(width: 8),
-                    const Text('Continue with Apple',
-                        style: TextStyle(fontSize: 16)),
+                    Text('Continue with Apple', style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
 
               // Ссылка на регистрацию
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Don’t have an account? ",
+                  const Text("Don’t have an account? ",
                       style: TextStyle(fontSize: 14, color: Colors.grey)),
                   GestureDetector(
                     onTap: _navigateToRegister,
@@ -323,7 +321,7 @@ class _SignInScreenState extends State<SignInScreen> {
                   ),
                 ],
               ),
-              SizedBox(height: 40),
+              const SizedBox(height: 40),
             ],
           ),
         ),
